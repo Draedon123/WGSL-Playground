@@ -29,6 +29,9 @@ importers:
       '@webgpu/types':
         specifier: ^0.1.67
         version: 0.1.67
+      dexie:
+        specifier: ^4.2.1
+        version: 4.2.1
       eslint:
         specifier: ^9.22.0
         version: 9.38.0
@@ -728,6 +731,9 @@ packages:
 
   devalue@5.4.1:
     resolution: {integrity: sha512-YtoaOfsqjbZQKGIMRYDWKjUmSB4VJ/RElB+bXZawQAQYAo4xu08GKTMVlsZDTF6R2MbAgjcAQRPI5eIyRAT2OQ==}
+
+  dexie@4.2.1:
+    resolution: {integrity: sha512-Ckej0NS6jxQ4Po3OrSQBFddayRhTCic2DoCAG5zacOfOVB9P2Q5Xc5uL/nVa7ZVs+HdMnvUPzLFCB/JwpB6Csg==}
 
   esbuild@0.25.11:
     resolution: {integrity: sha512-KohQwyzrKTQmhXDW1PjCv3Tyspn9n5GcY2RTDqeORIdIJY8yKIF7sTSopFmn/wpMPW4rdPXI0UE5LJLuq3bx0Q==}
@@ -1813,6 +1819,8 @@ snapshots:
     optional: true
 
   devalue@5.4.1: {}
+
+  dexie@4.2.1: {}
 
   esbuild@0.25.11:
     optionalDependencies:
