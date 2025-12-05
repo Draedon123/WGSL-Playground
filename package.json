@@ -9,7 +9,7 @@
     "build": "vite build",
     "postbuild": "node scripts/createRedirects.cjs build src/routes",
     "preview": "vite preview",
-    "prepare": "npx replace \"^import '.*\\.css';$\" \"\" -recursive ./node_modules/monaco-editor/esm/* && svelte-kit sync || echo ''",
+    "prepare": "node scripts/patchMonacoEditor.cjs && svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint .",
