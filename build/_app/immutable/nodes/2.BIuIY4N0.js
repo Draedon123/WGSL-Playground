@@ -1,0 +1,1 @@
+import"../chunks/DsnmJJEf.js";import"../chunks/KmhRTqvZ.js";import{u as r,a as m,$ as t}from"../chunks/CgADqSZq.js";import{h as n}from"../chunks/iDBoiVN9.js";var e=r('<main><h1 class="svelte-1uha8ag">Hello, World!</h1></main>');function c(a){var o=e();n(i=>{t.title="WGSL Playground"}),m(a,o)}export{c as component};
