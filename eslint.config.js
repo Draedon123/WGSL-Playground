@@ -18,7 +18,7 @@ export default defineConfig(
   ...svelte.configs.recommended,
   {
     languageOptions: {
-      globals: { ...globals.browser, ...globals.node },
+      globals: { ...globals.browser },
     },
     rules: {
       // typescript-eslint strongly recommend that you do not use the no-undef lint rule on TypeScript projects.
@@ -35,6 +35,12 @@ export default defineConfig(
         parser: ts.parser,
         svelteConfig,
       },
+    },
+  },
+  {
+    files: ["scripts/*.cjs"],
+    languageOptions: {
+      globals: { ...globals.node },
     },
   },
   {
