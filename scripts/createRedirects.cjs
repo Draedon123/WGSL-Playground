@@ -28,7 +28,7 @@ function createRedirects() {
   for (const filepath of paths) {
     const redirect = `<script>
   const { protocol, host, hash } = location;
-  location.href = \`\${protocol}//\${host}/WGSL-Playground/#redirect=${encodeURIComponent(filepath)}\${encodeURIComponent("#" + hash)}\`;
+  location.href = \`\${protocol}//\${host}/WGSL-Playground/#redirect=${encodeURIComponent(filepath)}\${encodeURIComponent(hash)}\`;
 </script>`;
 
     fs.writeFileSync(path.join(buildPath, filepath) + ".html", redirect);

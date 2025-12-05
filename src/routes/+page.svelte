@@ -7,6 +7,7 @@
     const match = location.hash.match(/#redirect=.+$/);
 
     if (match === null || match.length === 0) {
+      redirect.remove();
       return;
     }
 
@@ -29,4 +30,4 @@
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
 <!-- svelte-ignore a11y_missing_attribute -->
-<a style="display: none;" bind:this={redirect}></a>
+<a style="display: none;" bind:this={redirect} href={resolve("/")}></a>
