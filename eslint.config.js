@@ -42,6 +42,9 @@ export default defineConfig(
     languageOptions: {
       globals: { ...globals.node },
     },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
   },
   {
     ignores: ["build/**/*"],
