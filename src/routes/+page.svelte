@@ -23,11 +23,16 @@
 </svelte:head>
 
 <main>
-  <a href="{resolve('/shaders')}#test1">Test Shader 1</a>
+  <a href="{resolve('/shaders')}#test1" data-sveltekit-reload>Test Shader 1</a>
   <br />
-  <a href="{resolve('/shaders')}#test2">Test Shader 2</a>
+  <a href="{resolve('/shaders')}#test2" data-sveltekit-reload>Test Shader 2</a>
 </main>
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
 <!-- svelte-ignore a11y_missing_attribute -->
-<a style="display: none;" bind:this={redirect} href={resolve("/")}></a>
+<a
+  style="display: none;"
+  bind:this={redirect}
+  href={resolve("/")}
+  data-sveltekit-reload={false}
+></a>
