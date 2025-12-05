@@ -1,4 +1,5 @@
-<script lang="ts">
+<script>
+  import { resolve } from "$app/paths";
 </script>
 
 <svelte:head>
@@ -6,11 +7,7 @@
 </svelte:head>
 
 <main>
-  <h1>Hello, World!</h1>
+  <a href="{resolve('/shaders/')}#test1">Test Shader 1</a>
+  <br />
+  <a href="{resolve('/shaders/')}#test2">Test Shader 2</a>
 </main>
-
-<style lang="scss">
-  h1 {
-    text-align: center;
-  }
-</style>
