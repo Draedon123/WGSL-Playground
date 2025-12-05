@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { goto } from "$app/navigation";
+  import { replaceState } from "$app/navigation";
   import { resolve } from "$app/paths";
   import { onMount } from "svelte";
 
@@ -11,7 +11,8 @@
     }
 
     const redirectPath = decodeURIComponent(match[0].split("=")[1]);
-    goto(redirectPath);
+
+    replaceState(redirectPath, {});
   });
 </script>
 
