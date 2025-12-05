@@ -7,12 +7,14 @@
     "dev": "vite dev",
     "prebuild": "prettier --write .",
     "build": "vite build",
+    "postbuild": "node scripts/createRedirects.cjs build src/routes",
     "preview": "vite preview",
     "prepare": "svelte-kit sync || echo ''",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "eslint .",
-    "deploy": "git subtree push --prefix build origin gh-pages"
+    "deploy": "git subtree push --prefix build origin gh-pages",
+    "createRedirects": "node scripts/createRedirects.cjs build src/routes"
   },
   "devDependencies": {
     "@eslint/compat": "^1.2.5",
