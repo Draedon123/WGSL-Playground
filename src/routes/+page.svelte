@@ -13,8 +13,11 @@
 
     const redirectPath = decodeURIComponent(match[0].split("=")[1]);
 
-    redirect.href = redirectPath;
-    redirect.click();
+    redirect.href = resolve("/") + redirectPath;
+
+    setTimeout(() => {
+      redirect.click();
+    }, 1);
   });
 </script>
 
