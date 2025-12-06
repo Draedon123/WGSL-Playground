@@ -7,6 +7,16 @@ struct Fragment {
   @location(0) uv: vec2f,
 }
 
+struct _Parameters {
+  resolution: vec2u,
+  time: f32,
+  deltaTime: f32,
+  frame: u32,
+  frameRate: f32,
+}
+
+@group(0) @binding(0) var <uniform> params: _Parameters;
+
 const VERTICES: array<vec2f, 3> = array(
   vec2f(-1.0,  3.0),
   vec2f(-1.0, -1.0),

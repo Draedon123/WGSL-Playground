@@ -1,6 +1,8 @@
 <script lang="ts">
   import { onMount } from "svelte";
   import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
+  import { Loop } from "$lib/Loop";
+  import { BufferWriter } from "$lib/BufferWriter";
 
   type Props = {
     width: number;
@@ -9,8 +11,10 @@
 
   let { width, height }: Props = $props();
 
-  const SETTINGS_BYTE_LENGTH: number = 4;
+  const SETTINGS_BYTE_LENGTH: number = 6 * 4;
   const CANVAS_FORMAT: GPUTextureFormat = "rgba8unorm";
+
+  const loop = new Loop({ wormholeThreshold: Infinity });
 
   let canvas: HTMLCanvasElement;
   let gpu: GPUCanvasContext;
@@ -33,6 +37,7 @@
     const compilationInfo = await shader.getCompilationInfo();
 
     if (compilationInfo.messages.length > 0) {
+      stop();
       return new Error("Invalid shader");
     }
 
@@ -52,9 +57,24 @@
       },
     });
 
-    render();
-
+    restart();
     return null;
+  }
+
+  export function start(): void {
+    loop.start();
+  }
+
+  export function stop(): void {
+    loop.stop();
+  }
+
+  export function toggle(): void {
+    loop.toggle();
+  }
+
+  export function restart(): void {
+    loop.restart();
   }
 
   function render(): void {
@@ -85,6 +105,29 @@
 
     device.queue.submit([commandEncoder.finish()]);
   }
+
+  loop.addCallback((frameData) => {
+    if (
+      adapter === undefined ||
+      device === undefined ||
+      renderPipeline === null
+    ) {
+      return;
+    }
+
+    const bufferWriter = new BufferWriter(SETTINGS_BYTE_LENGTH);
+
+    bufferWriter.writeUint32(width);
+    bufferWriter.writeUint32(height);
+    bufferWriter.writeFloat32(frameData.totalTime_ms / 1000);
+    bufferWriter.writeFloat32(frameData.deltaTime_ms / 1000);
+    bufferWriter.writeFloat32(frameData.frame);
+    bufferWriter.writeFloat32(1000 / frameData.deltaTime_ms);
+
+    device.queue.writeBuffer(settingsBuffer, 0, bufferWriter.buffer);
+
+    render();
+  });
 
   onMount(async () => {
     if (!("gpu" in navigator)) {
@@ -144,6 +187,8 @@
         },
       ],
     });
+
+    start();
   });
 </script>
 
