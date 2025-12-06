@@ -11,9 +11,10 @@
 
   type Props = {
     project: Project;
+    showcase: boolean;
   };
 
-  let { project }: Props = $props();
+  let { project, showcase }: Props = $props();
 
   let monaco: typeof import("monaco-editor");
   let id = $state(1);
@@ -25,6 +26,14 @@
   $effect(() => {
     shaderCanvas.recompile(project.code);
     shaderCanvas.updateChannels(project.channels);
+  });
+
+  $effect(() => {
+    if (editor) {
+      editor.updateOptions({
+        readOnly: showcase,
+      });
+    }
   });
 
   $effect(() => {
@@ -88,9 +97,14 @@
   }
 
   async function updateCode(newCode = editor?.getValue() ?? ""): Promise<void> {
+    if (showcase) {
+      return;
+    }
+
     project.code = newCode;
 
     await shaderCanvas.recompile(project.code);
+
     await database.projects.update(id, {
       code: project.code,
     });
@@ -99,6 +113,10 @@
   async function nameOnChange(event: {
     currentTarget: HTMLInputElement;
   }): Promise<void> {
+    if (showcase) {
+      return;
+    }
+
     const newName = event.currentTarget.value;
 
     project.name = newName;
@@ -120,6 +138,7 @@
     editor = monaco.editor.create(editorElement, {
       automaticLayout: true,
       theme: "vs-dark",
+      readOnly: showcase,
     });
 
     if (project.code) {
@@ -153,6 +172,7 @@
     name="project-name"
     onchange={nameOnChange}
     value={project.name}
+    disabled={showcase}
   />
 </div>
 
@@ -225,8 +245,12 @@
       font-weight: 600;
 
       transition: border-color 0.3s;
-      &:hover {
+      &:hover:not([disabled]) {
         border-color: #000;
+      }
+
+      &[disabled] {
+        color: #000;
       }
     }
   }

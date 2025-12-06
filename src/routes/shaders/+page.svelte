@@ -39,6 +39,6 @@
   {:else if $project === undefined && hash !== ""}
     <Shader404 />
   {:else}
-    <ShaderPage project={$project as Project} />
+    <ShaderPage project={$project as Project} {showcase} />
   {/if}
 </main>
