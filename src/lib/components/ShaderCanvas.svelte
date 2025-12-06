@@ -174,7 +174,7 @@
     bufferWriter.writeUint32(height);
     bufferWriter.writeFloat32(frameData.totalTime_ms / 1000);
     bufferWriter.writeFloat32(frameData.deltaTime_ms / 1000);
-    bufferWriter.writeFloat32(frameData.frame);
+    bufferWriter.writeUint32(frameData.frame);
     bufferWriter.writeFloat32(1000 / frameData.deltaTime_ms);
 
     device.queue.writeBuffer(settingsBuffer, 0, bufferWriter.buffer);
