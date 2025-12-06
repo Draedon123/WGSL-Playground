@@ -26,6 +26,57 @@
     shaderCanvas.recompile(project.code);
   });
 
+  $effect(() => {
+    // noop just for reactivity
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    logs;
+
+    if (monaco === undefined || editor === undefined) {
+      return;
+    }
+
+    updateMarkers();
+  });
+
+  function updateMarkers(): void {
+    const model =
+      editor.getModel() as import("monaco-editor").editor.ITextModel;
+
+    if (logs === null) {
+      monaco.editor.setModelMarkers(model, "validation", []);
+      return;
+    }
+
+    monaco.editor.setModelMarkers(model, "validation", [
+      ...logs.errors.map((error) =>
+        createMarker(monaco.MarkerSeverity.Error, "Error", error)
+      ),
+      ...logs.warnings.map((warning) =>
+        createMarker(monaco.MarkerSeverity.Warning, "Warning", warning)
+      ),
+    ]);
+  }
+
+  function createMarker(
+    severity: import("monaco-editor").MarkerSeverity,
+    type: string,
+    message: GPUCompilationMessage
+  ): import("monaco-editor").editor.IMarkerData {
+    return {
+      severity,
+      startLineNumber: message.lineNum,
+      startColumn: message.linePos,
+      endLineNumber:
+        message.lineNum +
+        (project.code.slice(message.offset, message.length).match(/\n/g)
+          ?.length ?? 0),
+      endColumn:
+        project.code.slice(message.offset, message.length).split("\n").at(-1)
+          ?.length ?? message.linePos + message.offset,
+      message: `${type}: ${message.message}`,
+    };
+  }
+
   async function editorOnKeyDown(event: KeyboardEvent): Promise<void> {
     if (event.code !== "KeyS" || !event.ctrlKey) {
       return;
@@ -72,6 +123,7 @@
 
     if (project.code) {
       editor.setModel(monaco.editor.createModel(project.code, "wgsl"));
+      updateMarkers();
     }
 
     shaderCanvas.start();
