@@ -29,14 +29,6 @@
   });
 
   $effect(() => {
-    if (editor) {
-      editor.updateOptions({
-        readOnly: showcase,
-      });
-    }
-  });
-
-  $effect(() => {
     // noop just for reactivity
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     logs;
@@ -97,17 +89,14 @@
   }
 
   async function updateCode(newCode = editor?.getValue() ?? ""): Promise<void> {
-    if (showcase) {
-      return;
+    await shaderCanvas.recompile(newCode);
+
+    if (!showcase) {
+      project.code = newCode;
+      await database.projects.update(id, {
+        code: project.code,
+      });
     }
-
-    project.code = newCode;
-
-    await shaderCanvas.recompile(project.code);
-
-    await database.projects.update(id, {
-      code: project.code,
-    });
   }
 
   async function nameOnChange(event: {
@@ -138,7 +127,6 @@
     editor = monaco.editor.create(editorElement, {
       automaticLayout: true,
       theme: "vs-dark",
-      readOnly: showcase,
     });
 
     if (project.code) {
