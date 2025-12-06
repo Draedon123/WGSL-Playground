@@ -2,5 +2,9 @@
   {
     "name": "[SIG15] EntryLevel",
     "channels": 1
+  },
+  {
+    "name": "Seascape",
+    "channels": 0
   }
 ]
