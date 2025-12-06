@@ -9,10 +9,11 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
   import shaderTemplate from "$lib/shaders/shaderTemplate.wgsl?raw";
+
   import { Loop } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
+  import { onDestroy, onMount } from "svelte";
 
   type Props = {
     width: number;

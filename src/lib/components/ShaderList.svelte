@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
+  import Shader from "./Shader.svelte";
+
   import { database } from "$lib/Database";
   import { liveQuery } from "dexie";
-  import Shader from "./Shader.svelte";
 
   let projects = liveQuery(() =>
     database.projects

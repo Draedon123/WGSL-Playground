@@ -1,8 +1,9 @@
 <script lang="ts">
+  import defaultShader from "$lib/shaders/default.wgsl?raw";
+
   import { resolve } from "$app/paths";
   import { database } from "$lib/Database";
   import { onMount } from "svelte";
-  import defaultShader from "$lib/shaders/default.wgsl?raw";
 
   let { children }: WithChildren = $props();
 

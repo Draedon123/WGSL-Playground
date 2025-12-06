@@ -1,11 +1,13 @@
 <script lang="ts">
-  import { onDestroy, onMount } from "svelte";
-  import { database, type Project } from "$lib/Database";
   import "monaco-editor/min/vs/editor/editor.main.css";
+
   import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
   import ShaderCanvas, {
     type ShaderLogs,
   } from "$lib/components/ShaderCanvas.svelte";
+
+  import { onDestroy, onMount } from "svelte";
+  import { database, type Project } from "$lib/Database";
 
   type Props = {
     project: Project;
@@ -128,6 +130,7 @@
             <h1>{header}</h1>
 
             <ul>
+              <!-- eslint-disable-next-line svelte/require-each-key -->
               {#each messages as message}
                 <li>
                   {type} at {message.lineNum}:{message.linePos}. {message.message}.

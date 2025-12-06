@@ -1,7 +1,7 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
-  import type { Project } from "$lib/Database";
   import { onDestroy } from "svelte";
+  import type { Project } from "$lib/Database";
 
   type Props = {
     project: Project;

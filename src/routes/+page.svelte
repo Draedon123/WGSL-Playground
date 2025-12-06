@@ -1,8 +1,8 @@
 <script lang="ts">
+  import ShaderShowcase from "$lib/components/ShaderShowcase.svelte";
+
   import { resolve } from "$app/paths";
   import { onMount } from "svelte";
-
-  import ShaderShowcase from "$lib/components/ShaderShowcase.svelte";
 
   let redirect: HTMLAnchorElement;
 
