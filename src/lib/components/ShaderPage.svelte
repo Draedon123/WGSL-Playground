@@ -93,7 +93,7 @@
 
     if (!showcase) {
       project.code = newCode;
-      await database.projects.update(id, {
+      await database.projects.update(project, {
         code: project.code,
       });
     }
