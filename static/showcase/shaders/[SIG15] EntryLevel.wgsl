@@ -1,4 +1,7 @@
 // https://www.shadertoy.com/view/llXXzf
+// Licensed under https://creativecommons.org/licenses/by-nc-sa/3.0/
+// Usage of Shadetoy's builtin images was removed
+// This is a WGSL port
 
 const PI: f32 = 3.1415926535;
 
