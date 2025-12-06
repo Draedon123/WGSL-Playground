@@ -33,7 +33,13 @@
 
 <nav>
   {#snippet Item(href: string, content: string)}
-    <a {href}>{content}</a>
+    <a
+      {href}
+      onclick={() => {
+        // assume item doesn't link to page with hash
+        location.hash = "";
+      }}>{content}</a
+    >
   {/snippet}
 
   {@render Item(resolve("/shaders"), "Shaders")}

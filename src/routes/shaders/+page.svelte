@@ -3,7 +3,7 @@
   import { liveQuery } from "dexie";
   import { database, type Project } from "$lib/Database";
   import "monaco-editor/min/vs/editor/editor.main.css";
-  import ShaderPage from "../../lib/components/ShaderPage.svelte";
+  import ShaderPage from "$lib/components/ShaderPage.svelte";
   import Shader404 from "$lib/components/Shader404.svelte";
   import ShaderList from "$lib/components/ShaderList.svelte";
 
