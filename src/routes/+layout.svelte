@@ -2,14 +2,32 @@
   import { resolve } from "$app/paths";
   import { database } from "$lib/Database";
   import { onMount } from "svelte";
+  import defaultShader from "$lib/shaders/default.wgsl?raw";
 
   let { children }: WithChildren = $props();
+
+  async function setDefaultProject(): Promise<void> {
+    if (localStorage.getItem("hasAddedDefaultProject") === null) {
+      const thumbnail = await (
+        await fetch(resolve("/") + "default_thumbnail.png")
+      ).arrayBuffer();
+
+      await database.projects.add({
+        name: "My First Shader",
+        code: defaultShader,
+        thumbnail,
+      });
+
+      localStorage.setItem("hasAddedDefaultProject", "true");
+    }
+  }
 
   onMount(async () => {
     // preload
     import("monaco-editor");
 
     await database.open();
+    setDefaultProject();
   });
 </script>
 

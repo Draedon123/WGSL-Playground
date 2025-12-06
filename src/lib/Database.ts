@@ -4,6 +4,7 @@ type Project = {
   id?: number;
   name: string;
   code: string;
+  thumbnail: ArrayBuffer;
 };
 
 class ProjectDatabase extends Dexie {
