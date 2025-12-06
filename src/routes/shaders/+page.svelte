@@ -141,12 +141,19 @@
     min-height: 50vh;
   }
 
+  $margin: 1%;
+
+  .canvas,
+  .editor {
+    width: calc(50% - 0.5 * $margin);
+  }
+
   .canvas {
-    width: 50%;
+    margin-right: calc(0.5 * $margin);
   }
 
   .editor {
-    width: 50%;
+    margin-left: calc(0.5 * $margin);
   }
 
   @media screen and (max-width: 1000px) {
@@ -157,6 +164,7 @@
     .canvas,
     .editor {
       width: 100%;
+      margin: 0;
     }
   }
 

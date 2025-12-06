@@ -10,7 +10,7 @@
 
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
-  import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
+  import shaderTemplate from "$lib/shaders/shaderTemplate.wgsl?raw";
   import { Loop } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
 
@@ -261,5 +261,7 @@
   canvas {
     background-color: #000;
     width: 100%;
+
+    border-radius: 4px;
   }
 </style>

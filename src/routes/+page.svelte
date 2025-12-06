@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import { liveQuery } from "dexie";
   import { database } from "$lib/Database";
-  import defaultShader from "$lib/default.wgsl?raw";
+  import defaultShader from "$lib/shaders/default.wgsl?raw";
 
   let redirect: HTMLAnchorElement;
 
