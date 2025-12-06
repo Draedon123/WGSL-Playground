@@ -109,7 +109,6 @@
     );
 
     channels = await Promise.all(promises);
-
     createBindGroup1();
   }
 
@@ -282,13 +281,20 @@
       bindGroupLayouts: [bindGroupLayout0, bindGroupLayout1],
     });
 
-    sampler = device.createSampler();
-    await updateChannels([
-      new ArrayBuffer(),
-      new ArrayBuffer(),
-      new ArrayBuffer(),
-      new ArrayBuffer(),
-    ]);
+    // TODO: CUSTOM SAMPLERS
+    sampler = device.createSampler({
+      addressModeU: "repeat",
+      addressModeV: "repeat",
+    });
+
+    if (channels === undefined) {
+      await updateChannels([
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+      ]);
+    }
 
     bindGroup0 = device.createBindGroup({
       layout: bindGroupLayout0,
@@ -309,9 +315,16 @@
     if (mostRecentCode !== "") {
       await recompile(mostRecentCode);
     }
+
+    if (mostRecentChannels.length > 0) {
+      createBindGroup1();
+    }
   });
 
+  let mostRecentChannels: Texture[] = [];
   function createBindGroup1() {
+    mostRecentChannels.forEach((channel) => channel.destroy());
+    mostRecentChannels = channels;
     if (
       adapter === undefined ||
       device === undefined ||

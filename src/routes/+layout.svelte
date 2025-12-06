@@ -37,12 +37,17 @@
       const thumbnail = await (
         await fetch(folder + "thumbnail.png")
       ).arrayBuffer();
-      const channels: ArrayBuffer[] = [];
+      const channels: ArrayBuffer[] = [
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+      ];
 
       for (let i = 0; i < shader.channels; i++) {
-        channels.push(
-          await (await fetch(folder + `channel${i}.png`)).arrayBuffer()
-        );
+        channels[i] = await (
+          await fetch(folder + `channel${i}.png`)
+        ).arrayBuffer();
       }
 
       shaders.push({

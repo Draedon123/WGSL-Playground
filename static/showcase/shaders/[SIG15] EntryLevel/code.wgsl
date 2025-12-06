@@ -1,6 +1,6 @@
 // https://www.shadertoy.com/view/llXXzf
 // Licensed under https://creativecommons.org/licenses/by-nc-sa/3.0/
-// Usage of Shadetoy's builtin images was removed
+// Usage of Shadetoy's builtin cubemap was removed
 // This is a WGSL port
 
 const PI: f32 = 3.1415926535;
@@ -87,6 +87,14 @@ fn trace(o: vec3f, r: vec3f) -> f32 {
   return t;
 }
 
+fn _texture(p: vec3f) -> vec3f {
+  let ta: vec3f = textureSample(channel0, textureSampler, p.yz).rgb;
+  let tb: vec3f = textureSample(channel0, textureSampler, p.xz).rgb;
+  let tc: vec3f = textureSample(channel0, textureSampler, p.xy).rgb;
+
+  return (ta + tb + tc) / 3.0;
+}
+
 @fragment
 fn main(fragment: Fragment) -> @location(0) vec4f {
   var uv: vec2f = fragment.uv * 2.0 - 1.0;
@@ -112,6 +120,7 @@ fn main(fragment: Fragment) -> @location(0) vec4f {
     diff = vec3f(1.0, 1.0, 1.0);
   }
 
+  diff += _texture(w);
   diff = mix(diff, vec3f(1.0), abs(sn.y));
   diff = mix(vec3f(0.8, 0.0, 0.0), diff, abs(sn.y));
 
