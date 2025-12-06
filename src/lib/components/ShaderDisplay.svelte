@@ -2,14 +2,18 @@
   import { onMount } from "svelte";
   import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
 
-  // type Props = {};
+  type Props = {
+    width: number;
+    height: number;
+  };
 
-  // let {}: Props = $props();
+  let { width, height }: Props = $props();
 
   const SETTINGS_BYTE_LENGTH: number = 4;
   const CANVAS_FORMAT: GPUTextureFormat = "rgba8unorm";
 
   let canvas: HTMLCanvasElement;
+  let gpu: GPUCanvasContext;
   let adapter: GPUAdapter;
   let device: GPUDevice;
   let bindGroupLayout: GPUBindGroupLayout;
@@ -48,7 +52,38 @@
       },
     });
 
+    render();
+
     return null;
+  }
+
+  function render(): void {
+    if (
+      adapter === undefined ||
+      device === undefined ||
+      renderPipeline === null
+    ) {
+      return;
+    }
+
+    const commandEncoder = device.createCommandEncoder();
+    const renderPass = commandEncoder.beginRenderPass({
+      colorAttachments: [
+        {
+          loadOp: "clear",
+          storeOp: "store",
+          view: gpu.getCurrentTexture().createView(),
+        },
+      ],
+    });
+
+    renderPass.setBindGroup(0, bindGroup);
+    renderPass.setPipeline(renderPipeline);
+
+    renderPass.draw(3);
+    renderPass.end();
+
+    device.queue.submit([commandEncoder.finish()]);
   }
 
   onMount(async () => {
@@ -57,7 +92,7 @@
       return;
     }
 
-    const gpu = canvas.getContext("webgpu");
+    gpu = canvas.getContext("webgpu") as GPUCanvasContext;
 
     if (gpu === null) {
       console.error("Could not get WebGPU Canvas Rendering Context");
@@ -112,13 +147,11 @@
   });
 </script>
 
-<canvas bind:this={canvas}></canvas>
+<canvas bind:this={canvas} {width} {height}></canvas>
 
 <style lang="scss">
   canvas {
     background-color: #000;
-
     width: 100%;
-    height: 100%;
   }
 </style>

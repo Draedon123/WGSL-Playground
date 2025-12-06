@@ -47,6 +47,7 @@
     });
 
     editor.setModel(monaco.editor.createModel(code ?? "", "wgsl"));
+    await shaderDisplay.recompile(code);
   });
 
   onDestroy(() => {
@@ -67,7 +68,7 @@
   <div class="centre">
     <div class="main">
       <div class="canvas">
-        <ShaderDisplay bind:this={shaderDisplay} />
+        <ShaderDisplay bind:this={shaderDisplay} width={800} height={450} />
       </div>
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
@@ -92,7 +93,6 @@
   }
 
   .canvas {
-    background-color: #000;
     width: 50%;
   }
 
