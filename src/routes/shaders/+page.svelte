@@ -19,6 +19,10 @@
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
   let logs: ShaderLogs | null = $state(null);
 
+  $effect(() => {
+    editor?.getModel()?.setValue(code ?? "");
+  });
+
   async function updateCode(event: KeyboardEvent): Promise<void> {
     if (editor === undefined) {
       return;
@@ -31,7 +35,11 @@
     event.preventDefault();
 
     code = editor.getValue();
+
     logs = await shaderDisplay.recompile(code);
+    database.projects.update(id, {
+      code,
+    });
   }
 
   onMount(async () => {
@@ -49,7 +57,9 @@
       theme: "vs-dark",
     });
 
-    editor.setModel(monaco.editor.createModel(code ?? "", "wgsl"));
+    if (code) {
+      editor.setModel(monaco.editor.createModel(code, "wgsl"));
+    }
     logs = await shaderDisplay.recompile(code);
   });
 
