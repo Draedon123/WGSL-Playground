@@ -6,6 +6,9 @@
   let { children }: WithChildren = $props();
 
   onMount(async () => {
+    // preload
+    import("monaco-editor");
+
     await database.open();
   });
 </script>
