@@ -8,17 +8,24 @@
   import { onMount } from "svelte";
   import { liveQuery } from "dexie";
   import { database, type Project } from "$lib/Database";
+  import { writable } from "svelte/store";
 
   let hash = $state("");
-  let id = $derived(parseInt(hash === "" ? "0" : hash.slice(1)));
-  let project = $derived.by(() => {
-    // noop just for reactivity
-    // https://github.com/dexie/Dexie.js/issues/2075#issuecomment-2390570044
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    id;
-
-    return liveQuery(() => database.projects.get(id));
-  });
+  let id = $derived(parseInt(hash.startsWith("#id=") ? hash.slice(4) : "-1"));
+  let source = $derived(
+    hash.startsWith("#raw=") ? decodeURIComponent(hash.slice(5)) : ""
+  );
+  let project = $derived(
+    id !== -1
+      ? liveQuery(() => database.projects.get(id))
+      : source !== ""
+        ? writable<Project>({
+            code: source,
+            name: "Untitled",
+            thumbnail: new ArrayBuffer(),
+          })
+        : undefined
+  );
 
   onMount(async () => {
     hash = location.hash;
@@ -28,7 +35,6 @@
 <svelte:window
   onhashchange={() => {
     hash = location.hash;
-    id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
   }}
 />
 

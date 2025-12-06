@@ -9,15 +9,18 @@
 
   let { project }: Props = $props();
 
-  let thumbnailBlob = new Blob([project.thumbnail]);
-  let thumbnailSrc = URL.createObjectURL(thumbnailBlob);
+  const thumbnailBlob = new Blob([project.thumbnail]);
+  const thumbnailSrc = URL.createObjectURL(thumbnailBlob);
+  const hash = project.id
+    ? `id=${project.id}`
+    : `raw=${encodeURIComponent(project.code)}`;
 
   onDestroy(() => {
     URL.revokeObjectURL(thumbnailSrc);
   });
 </script>
 
-<a class="container" href="{resolve('/shaders')}#{project.id}">
+<a class="container" href="{resolve('/shaders')}#{hash}">
   <h2>{project.name}</h2>
   <img src={thumbnailSrc} alt={project.name} />
 </a>
