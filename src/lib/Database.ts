@@ -5,6 +5,7 @@ type Project = {
   name: string;
   code: string;
   thumbnail: ArrayBuffer;
+  channels: ArrayBuffer[];
 };
 
 class ProjectDatabase extends Dexie {

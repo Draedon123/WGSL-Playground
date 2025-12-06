@@ -98,6 +98,21 @@
     restart();
   }
 
+  export async function updateChannels(
+    rawChannels: ArrayBuffer[]
+  ): Promise<void> {
+    channels?.forEach((channel) => channel.destroy());
+    const promises = rawChannels.map((channel) =>
+      channel.byteLength === 0
+        ? Texture.colour(0, 0, 0)
+        : Texture.fromArrayBuffer(channel)
+    );
+
+    channels = await Promise.all(promises);
+
+    createBindGroup1();
+  }
+
   function processCompilationMessages(
     messages: GPUCompilationMessage[]
   ): GPUCompilationMessage[] {
@@ -268,12 +283,12 @@
     });
 
     sampler = device.createSampler();
-    channels = [
-      Texture.colour(0, 0, 0, 255).initialise(device),
-      Texture.colour(0, 0, 0, 255).initialise(device),
-      Texture.colour(0, 0, 0, 255).initialise(device),
-      Texture.colour(0, 0, 0, 255).initialise(device),
-    ];
+    await updateChannels([
+      new ArrayBuffer(),
+      new ArrayBuffer(),
+      new ArrayBuffer(),
+      new ArrayBuffer(),
+    ]);
 
     bindGroup0 = device.createBindGroup({
       layout: bindGroupLayout0,
@@ -289,8 +304,6 @@
       ],
     });
 
-    createBindGroup1();
-
     device.pushErrorScope("validation");
 
     if (mostRecentCode !== "") {
@@ -302,10 +315,13 @@
     if (
       adapter === undefined ||
       device === undefined ||
-      bindGroupLayout1 === undefined
+      bindGroupLayout1 === undefined ||
+      channels?.length !== 4
     ) {
       return;
     }
+
+    channels.forEach((channel) => channel.initialise(device));
 
     bindGroup1 = device.createBindGroup({
       layout: bindGroupLayout1,

@@ -57,6 +57,15 @@ class Texture {
     return new Texture(bitmap, bitmap.width, bitmap.height, label);
   }
 
+  public static async fromArrayBuffer(
+    buffer: ArrayBuffer,
+    label?: string
+  ): Promise<Texture> {
+    const bitmap = await createImageBitmap(new Blob([buffer]));
+
+    return new Texture(bitmap, bitmap.width, bitmap.height, label);
+  }
+
   /** 0-255 */
   public static colour(
     r: number,

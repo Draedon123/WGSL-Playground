@@ -10,6 +10,7 @@
   import { database, type Project } from "$lib/Database";
   import { writable } from "svelte/store";
   import { getHash } from "$lib/hash";
+  import { toArrayBuffer } from "$lib/base64";
 
   let hash = $state("");
   let id = $derived(parseInt(getHash("id", hash) ?? "-1"));
@@ -22,6 +23,20 @@
             code: source,
             name: decodeURIComponent(getHash("name", hash) ?? "Untitled"),
             thumbnail: new ArrayBuffer(),
+            channels: [
+              toArrayBuffer(
+                decodeURIComponent(getHash("channel0", hash) ?? "")
+              ),
+              toArrayBuffer(
+                decodeURIComponent(getHash("channel1", hash) ?? "")
+              ),
+              toArrayBuffer(
+                decodeURIComponent(getHash("channel2", hash) ?? "")
+              ),
+              toArrayBuffer(
+                decodeURIComponent(getHash("channel3", hash) ?? "")
+              ),
+            ],
           })
         : undefined
   );

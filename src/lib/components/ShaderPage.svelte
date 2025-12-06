@@ -24,6 +24,7 @@
 
   $effect(() => {
     shaderCanvas.recompile(project.code);
+    shaderCanvas.updateChannels(project.channels);
   });
 
   $effect(() => {

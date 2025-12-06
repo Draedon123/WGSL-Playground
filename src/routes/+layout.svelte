@@ -17,6 +17,12 @@
         name: "My First Shader",
         code: defaultShader,
         thumbnail,
+        channels: [
+          new ArrayBuffer(),
+          new ArrayBuffer(),
+          new ArrayBuffer(),
+          new ArrayBuffer(),
+        ],
       });
 
       localStorage.setItem("hasAddedDefaultProject", "true");

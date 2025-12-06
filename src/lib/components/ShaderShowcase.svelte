@@ -14,10 +14,30 @@
       const thumbnail = await (
         await fetch(resolve("/") + `showcase/thumbnails/${shader}.png`)
       ).arrayBuffer();
+      const data = await (
+        await fetch(resolve("/") + `showcase/shaders/${shader}.json`)
+      ).json();
+      const channelCount: number = data.channels;
+      const channels = [
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+      ];
+
+      for (let i = 0; i < channelCount; i++) {
+        channels[i] = await (
+          await fetch(
+            resolve("/") + `showcase/shaders/channels/${shader}${i}.png`
+          )
+        ).arrayBuffer();
+      }
+
       const project: Project = {
         name: shader,
         code: shaderSource,
         thumbnail,
+        channels,
       };
 
       return project;

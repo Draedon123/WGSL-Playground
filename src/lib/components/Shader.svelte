@@ -3,6 +3,7 @@
   import { onDestroy } from "svelte";
   import { setHash } from "$lib/hash";
   import type { Project } from "$lib/Database";
+  import { fromArrayBuffer } from "$lib/base64";
 
   type Props = {
     project: Project;
@@ -14,11 +15,29 @@
   const thumbnailSrc = URL.createObjectURL(thumbnailBlob);
   const hash = project.id
     ? setHash("id", project.id.toString(), "")
-    : setHash(
-        "raw",
-        encodeURIComponent(project.code),
-        setHash("name", encodeURIComponent(project.name), "")
-      );
+    : (() => {
+        let hash = "";
+
+        hash = setHash("raw", encodeURIComponent(project.code), hash);
+        hash = setHash("name", encodeURIComponent(project.name), hash);
+
+        for (let i = 0; i < 4; i++) {
+          const channel = project.channels[i];
+
+          if (channel.byteLength === 0) {
+            continue;
+          }
+
+          hash = setHash(
+            `channel${i}`,
+            encodeURIComponent(fromArrayBuffer(channel)),
+            hash
+          );
+        }
+
+        console.log(hash.length);
+        return hash;
+      })();
 
   onDestroy(() => {
     URL.revokeObjectURL(thumbnailSrc);
