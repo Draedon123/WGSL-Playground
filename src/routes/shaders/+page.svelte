@@ -20,24 +20,24 @@
   let logs: ShaderLogs | null = $state(null);
 
   $effect(() => {
-    editor?.getModel()?.setValue(code ?? "");
+    editor?.getModel()?.setValue(code);
+    shaderDisplay.recompile(code);
   });
 
-  async function updateCode(event: KeyboardEvent): Promise<void> {
-    if (editor === undefined) {
-      return;
-    }
-
+  async function editorOnKeyDown(event: KeyboardEvent): Promise<void> {
     if (event.code !== "KeyS" || !event.ctrlKey) {
       return;
     }
 
     event.preventDefault();
+    updateCode();
+  }
 
-    code = editor.getValue();
+  async function updateCode(newCode = editor?.getValue() ?? ""): Promise<void> {
+    code = newCode;
 
-    logs = await shaderDisplay.recompile(code);
-    database.projects.update(id, {
+    await shaderDisplay.recompile(code);
+    await database.projects.update(id, {
       code,
     });
   }
@@ -60,7 +60,8 @@
     if (code) {
       editor.setModel(monaco.editor.createModel(code, "wgsl"));
     }
-    logs = await shaderDisplay.recompile(code);
+
+    shaderDisplay.start();
   });
 
   onDestroy(() => {
@@ -81,13 +82,18 @@
   <div class="centre">
     <div class="main">
       <div class="canvas">
-        <ShaderDisplay bind:this={shaderDisplay} width={800} height={450} />
+        <ShaderDisplay
+          bind:this={shaderDisplay}
+          bind:logs
+          width={800}
+          height={450}
+        />
       </div>
       <!-- svelte-ignore a11y_no_static_element_interactions -->
       <div
         class="editor"
         bind:this={editorElement}
-        onkeydown={updateCode}
+        onkeydown={editorOnKeyDown}
       ></div>
       <div class="logs">
         {#if logs !== null}

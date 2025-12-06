@@ -9,7 +9,7 @@
 </script>
 
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { onDestroy, onMount } from "svelte";
   import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
   import { Loop } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
@@ -17,9 +17,10 @@
   type Props = {
     width: number;
     height: number;
+    logs: ShaderLogs | null;
   };
 
-  let { width, height }: Props = $props();
+  let { width, height, logs = $bindable() }: Props = $props();
 
   const SETTINGS_BYTE_LENGTH: number = 6 * 4;
   const CANVAS_FORMAT: GPUTextureFormat = "rgba8unorm";
@@ -36,9 +37,13 @@
   let renderPipeline: GPURenderPipeline | null = null;
   let settingsBuffer: GPUBuffer;
 
-  export async function recompile(code: string): Promise<ShaderLogs | null> {
+  let mostRecentCode = "";
+  export async function recompile(code: string): Promise<void> {
+    mostRecentCode = code;
+    logs = null;
+
     if (adapter === undefined || device === undefined) {
-      return null;
+      return;
     }
 
     const shader = device.createShaderModule({
@@ -59,11 +64,13 @@
     if (errors.length > 0 || warnings.length > 0 || info.length > 0) {
       stop();
 
-      return {
+      logs = {
         errors,
         warnings,
         info,
       };
+
+      return;
     }
 
     renderPipeline = device.createRenderPipeline({
@@ -83,7 +90,6 @@
     });
 
     restart();
-    return null;
   }
 
   function processCompilationMessages(
@@ -234,7 +240,16 @@
       ],
     });
 
-    start();
+    if (mostRecentCode !== "") {
+      await recompile(mostRecentCode);
+    }
+  });
+
+  onDestroy(() => {
+    stop();
+    device?.destroy();
+    settingsBuffer?.destroy();
+    gpu?.unconfigure();
   });
 </script>
 
