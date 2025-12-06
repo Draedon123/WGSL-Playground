@@ -20,7 +20,6 @@
   let logs: ShaderLogs | null = $state(null);
 
   $effect(() => {
-    editor?.getModel()?.setValue(code);
     shaderDisplay.recompile(code);
   });
 
