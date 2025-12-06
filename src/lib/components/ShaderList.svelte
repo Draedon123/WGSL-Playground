@@ -2,6 +2,7 @@
   import { resolve } from "$app/paths";
   import { database } from "$lib/Database";
   import { liveQuery } from "dexie";
+  import Shader from "./Shader.svelte";
 
   let projects = liveQuery(() =>
     database.projects
@@ -11,13 +12,34 @@
 </script>
 
 <h1>My Shaders</h1>
-{#each $projects as project (project.id)}
-  <a href="{resolve('/shaders')}#{project.id}">{project.name}</a>
-  <br />
-{/each}
+<div class="centre">
+  <div class="shader-container">
+    {#each $projects as project (project.id)}
+      <div class="shader">
+        <Shader {project} />
+      </div>
+    {/each}
+  </div>
+</div>
 
 <style lang="scss">
   h1 {
     text-align: center;
+  }
+
+  .shader-container {
+    display: flex;
+
+    width: 85%;
+  }
+
+  .shader {
+    width: 400px;
+  }
+
+  .centre {
+    display: flex;
+    justify-content: center;
+    width: 100%;
   }
 </style>
