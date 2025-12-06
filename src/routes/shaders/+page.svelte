@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
   import { onDestroy, onMount } from "svelte";
   import { liveQuery } from "dexie";
   import { database, type Project } from "$lib/Database";
@@ -11,9 +10,14 @@
 
   let monaco: typeof import("monaco-editor");
   let id = $state(1);
-  let _project = liveQuery(() => database.projects.where({ id }).toArray());
-  let project = $derived(($_project?.[0] ?? null) as Project | null);
-  let code = $derived(project?.code ?? "");
+  let project = $derived.by(() => {
+    // noop just for reactivity
+    // https://github.com/dexie/Dexie.js/issues/2075#issuecomment-2390570044
+    id;
+
+    return liveQuery(() => database.projects.get(id));
+  });
+  let code = $derived($project?.code ?? "");
   let shaderDisplay: ShaderDisplay;
   let editorElement: HTMLDivElement;
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
@@ -42,7 +46,7 @@
   }
 
   onMount(async () => {
-    id = parseInt(location.hash.slice(1));
+    id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
 
     // avoid reference to `window` during ssr
     monaco = await import("monaco-editor");
@@ -70,13 +74,17 @@
 </script>
 
 <svelte:head>
-  <title>WGSL Playground - {project?.name ?? "Loading..."}</title>
+  <title>WGSL Playground - {$project?.name ?? "Loading..."}</title>
 </svelte:head>
 
-<main>
-  <h1>{project?.name ?? "Loading..."}</h1>
+<svelte:window
+  onhashchange={() => {
+    id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
+  }}
+/>
 
-  <a href={resolve("/")}>Home</a>
+<main>
+  <h1>{$project?.name ?? "Loading..."}</h1>
 
   <div class="centre">
     <div class="main">
