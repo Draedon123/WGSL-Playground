@@ -9,19 +9,18 @@
   import { liveQuery } from "dexie";
   import { database, type Project } from "$lib/Database";
   import { writable } from "svelte/store";
+  import { getHash } from "$lib/hash";
 
   let hash = $state("");
-  let id = $derived(parseInt(hash.startsWith("#id=") ? hash.slice(4) : "-1"));
-  let source = $derived(
-    hash.startsWith("#raw=") ? decodeURIComponent(hash.slice(5)) : ""
-  );
+  let id = $derived(parseInt(getHash("id", hash) ?? "-1"));
+  let source = $derived(decodeURIComponent(getHash("raw", hash) ?? ""));
   let project = $derived(
     id !== -1
       ? liveQuery(() => database.projects.get(id))
       : source !== ""
         ? writable<Project>({
             code: source,
-            name: "Untitled",
+            name: decodeURIComponent(getHash("name", hash) ?? "Untitled"),
             thumbnail: new ArrayBuffer(),
           })
         : undefined

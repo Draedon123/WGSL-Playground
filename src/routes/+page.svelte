@@ -3,6 +3,7 @@
 
   import { resolve } from "$app/paths";
   import { onMount } from "svelte";
+  import { getHash } from "$lib/hash";
 
   let redirect: HTMLAnchorElement;
 
@@ -11,13 +12,11 @@
   });
 
   function redirectUser(): void {
-    const match = location.hash.match(/#redirect=.+$/);
+    const redirectPath = decodeURIComponent(getHash("redirect") ?? "");
 
-    if (match === null || match.length === 0) {
+    if (redirectPath === "") {
       return;
     }
-
-    const redirectPath = decodeURIComponent(match[0].split("=")[1]);
 
     redirect.href = resolve("/") + redirectPath;
 
