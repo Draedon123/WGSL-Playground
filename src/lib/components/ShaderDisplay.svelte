@@ -240,6 +240,8 @@
       ],
     });
 
+    device.pushErrorScope("validation");
+
     if (mostRecentCode !== "") {
       await recompile(mostRecentCode);
     }
