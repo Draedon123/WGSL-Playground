@@ -27,7 +27,9 @@
     display: block;
 
     width: 100%;
-    height: 100%;
+    height: calc(100% - 5px);
+    overflow: hidden;
+    box-sizing: border-box;
 
     border: 1px solid #000;
     border-radius: 10px;

@@ -29,8 +29,11 @@
 
   .shader-container {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
-    width: 85%;
+    width: 90%;
+    gap: 15px;
   }
 
   .shader {
