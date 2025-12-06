@@ -5,7 +5,9 @@
   import { database, type Project } from "$lib/Database";
   import "monaco-editor/min/vs/editor/editor.main.css";
   import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-  import ShaderDisplay from "$lib/components/ShaderDisplay.svelte";
+  import ShaderDisplay, {
+    type ShaderLogs,
+  } from "$lib/components/ShaderDisplay.svelte";
 
   let monaco: typeof import("monaco-editor");
   let id = $state(1);
@@ -15,6 +17,7 @@
   let shaderDisplay: ShaderDisplay;
   let editorElement: HTMLDivElement;
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
+  let logs: ShaderLogs | null = $state(null);
 
   async function updateCode(event: KeyboardEvent): Promise<void> {
     if (editor === undefined) {
@@ -28,7 +31,7 @@
     event.preventDefault();
 
     code = editor.getValue();
-    await shaderDisplay.recompile(code);
+    logs = await shaderDisplay.recompile(code);
   }
 
   onMount(async () => {
@@ -47,7 +50,7 @@
     });
 
     editor.setModel(monaco.editor.createModel(code ?? "", "wgsl"));
-    await shaderDisplay.recompile(code);
+    logs = await shaderDisplay.recompile(code);
   });
 
   onDestroy(() => {
@@ -76,6 +79,35 @@
         bind:this={editorElement}
         onkeydown={updateCode}
       ></div>
+      <div class="logs">
+        {#if logs !== null}
+          {#snippet Log(
+            messages: GPUCompilationMessage[],
+            type: string,
+            header: string
+          )}
+            {#if messages.length > 0}
+              <h1>{header}</h1>
+
+              <ul>
+                {#each messages as message}
+                  <li>
+                    {type} at {message.lineNum}:{message.linePos}. {message.message}.
+                    Source: {code.slice(
+                      message.offset,
+                      message.offset + message.length
+                    )}
+                  </li>
+                {/each}
+              </ul>
+            {/if}
+          {/snippet}
+
+          {@render Log(logs.errors, "Error", "Errors")}
+          {@render Log(logs.warnings, "Warning", "Warnings")}
+          {@render Log(logs.info, "Info", "Info")}
+        {/if}
+      </div>
     </div>
   </div>
 </main>
@@ -87,6 +119,8 @@
 
   .main {
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
 
     width: 80%;
     min-height: 50vh;

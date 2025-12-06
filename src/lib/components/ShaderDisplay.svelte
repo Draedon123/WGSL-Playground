@@ -1,3 +1,13 @@
+<script lang="ts" module>
+  type ShaderLogs = {
+    errors: GPUCompilationMessage[];
+    warnings: GPUCompilationMessage[];
+    info: GPUCompilationMessage[];
+  };
+
+  export type { ShaderLogs };
+</script>
+
 <script lang="ts">
   import { onMount } from "svelte";
   import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
@@ -26,7 +36,7 @@
   let renderPipeline: GPURenderPipeline | null = null;
   let settingsBuffer: GPUBuffer;
 
-  export async function recompile(code: string): Promise<Error | null> {
+  export async function recompile(code: string): Promise<ShaderLogs | null> {
     if (adapter === undefined || device === undefined) {
       return null;
     }
@@ -34,11 +44,26 @@
     const shader = device.createShaderModule({
       code: shaderTemplate + code,
     });
-    const compilationInfo = await shader.getCompilationInfo();
 
-    if (compilationInfo.messages.length > 0) {
+    const compilationInfo = await shader.getCompilationInfo();
+    const errors = processCompilationMessages(
+      compilationInfo.messages.filter((message) => message.type === "error")
+    );
+    const warnings = processCompilationMessages(
+      compilationInfo.messages.filter((message) => message.type === "warning")
+    );
+    const info = processCompilationMessages(
+      compilationInfo.messages.filter((message) => message.type === "info")
+    );
+
+    if (errors.length > 0 || warnings.length > 0 || info.length > 0) {
       stop();
-      return new Error("Invalid shader");
+
+      return {
+        errors,
+        warnings,
+        info,
+      };
     }
 
     renderPipeline = device.createRenderPipeline({
@@ -59,6 +84,27 @@
 
     restart();
     return null;
+  }
+
+  function processCompilationMessages(
+    messages: GPUCompilationMessage[]
+  ): GPUCompilationMessage[] {
+    return messages
+      .sort((a, b) => a.offset - b.offset)
+      .map(
+        ({ length, lineNum, linePos, message, offset, type }) =>
+          ({
+            lineNum: lineNum - (shaderTemplate.match(/\n/g)?.length ?? 0),
+            offset: offset - shaderTemplate.length,
+            length,
+            linePos,
+            message,
+            type,
+          }) satisfies Omit<
+            GPUCompilationMessage,
+            "__brand"
+          > as GPUCompilationMessage
+      );
   }
 
   export function start(): void {
