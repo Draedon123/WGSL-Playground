@@ -5,17 +5,31 @@
   import { database, type Project } from "$lib/Database";
   import "monaco-editor/min/vs/editor/editor.main.css";
   import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+  import ShaderDisplay from "$lib/components/ShaderDisplay.svelte";
 
   let monaco: typeof import("monaco-editor");
   let id = $state(1);
   let _project = liveQuery(() => database.projects.where({ id }).toArray());
   let project = $derived(($_project?.[0] ?? null) as Project | null);
+  let code = $derived(project?.code ?? "");
+  let shaderDisplay: ShaderDisplay;
   let editorElement: HTMLDivElement;
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
 
-  $effect(() => {
-    editor?.getModel()?.setValue(project?.code ?? "");
-  });
+  async function updateCode(event: KeyboardEvent): Promise<void> {
+    if (editor === undefined) {
+      return;
+    }
+
+    if (event.code !== "KeyS" || !event.ctrlKey) {
+      return;
+    }
+
+    event.preventDefault();
+
+    code = editor.getValue();
+    await shaderDisplay.recompile(code);
+  }
 
   onMount(async () => {
     id = parseInt(location.hash.slice(1));
@@ -32,7 +46,7 @@
       theme: "vs-dark",
     });
 
-    editor.setModel(monaco.editor.createModel(project?.code ?? "", "wgsl"));
+    editor.setModel(monaco.editor.createModel(code ?? "", "wgsl"));
   });
 
   onDestroy(() => {
@@ -52,8 +66,15 @@
 
   <div class="centre">
     <div class="main">
-      <canvas></canvas>
-      <div class="editor" bind:this={editorElement}></div>
+      <div class="canvas">
+        <ShaderDisplay bind:this={shaderDisplay} />
+      </div>
+      <!-- svelte-ignore a11y_no_static_element_interactions -->
+      <div
+        class="editor"
+        bind:this={editorElement}
+        onkeydown={updateCode}
+      ></div>
     </div>
   </div>
 </main>
@@ -70,7 +91,7 @@
     min-height: 50vh;
   }
 
-  canvas {
+  .canvas {
     background-color: #000;
     width: 50%;
   }
@@ -84,7 +105,7 @@
       flex-direction: column;
     }
 
-    canvas,
+    .canvas,
     .editor {
       width: 100%;
     }
