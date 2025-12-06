@@ -8,38 +8,19 @@
   import { onMount } from "svelte";
   import { liveQuery } from "dexie";
   import { database, type Project } from "$lib/Database";
-  import { writable } from "svelte/store";
   import { getHash } from "$lib/hash";
-  import { toArrayBuffer } from "$lib/base64";
 
   let hash = $state("");
-  let id = $derived(parseInt(getHash("id", hash) ?? "-1"));
-  let source = $derived(decodeURIComponent(getHash("raw", hash) ?? ""));
-  let project = $derived(
-    id !== -1
-      ? liveQuery(() => database.projects.get(id))
-      : source !== ""
-        ? writable<Project>({
-            code: source,
-            name: decodeURIComponent(getHash("name", hash) ?? "Untitled"),
-            thumbnail: new ArrayBuffer(),
-            channels: [
-              toArrayBuffer(
-                decodeURIComponent(getHash("channel0", hash) ?? "")
-              ),
-              toArrayBuffer(
-                decodeURIComponent(getHash("channel1", hash) ?? "")
-              ),
-              toArrayBuffer(
-                decodeURIComponent(getHash("channel2", hash) ?? "")
-              ),
-              toArrayBuffer(
-                decodeURIComponent(getHash("channel3", hash) ?? "")
-              ),
-            ],
-          })
-        : undefined
-  );
+  let id = $derived(parseInt(getHash("id", hash) ?? "0"));
+  let showcase = $derived(getHash("showcase", hash) === "1");
+  let project = $derived.by(() => {
+    // noop just for reactivity
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    id;
+
+    const table = showcase ? database.showcase : database.projects;
+    return liveQuery(() => table.get(id));
+  });
 
   onMount(() => {
     hash = location.hash;

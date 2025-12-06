@@ -7,37 +7,20 @@
 
   type Props = {
     project: Project;
+    showcase?: boolean;
   };
 
-  let { project }: Props = $props();
+  let { project, showcase = false }: Props = $props();
 
   const thumbnailBlob = new Blob([project.thumbnail]);
   const thumbnailSrc = URL.createObjectURL(thumbnailBlob);
   const hash = project.id
-    ? setHash("id", project.id.toString(), "")
-    : (() => {
-        let hash = "";
-
-        hash = setHash("raw", encodeURIComponent(project.code), hash);
-        hash = setHash("name", encodeURIComponent(project.name), hash);
-
-        for (let i = 0; i < 4; i++) {
-          const channel = project.channels[i];
-
-          if (channel.byteLength === 0) {
-            continue;
-          }
-
-          hash = setHash(
-            `channel${i}`,
-            encodeURIComponent(fromArrayBuffer(channel)),
-            hash
-          );
-        }
-
-        console.log(hash.length);
-        return hash;
-      })();
+    ? setHash(
+        "id",
+        project.id.toString(),
+        showcase ? setHash("showcase", "1", "") : ""
+      )
+    : "";
 
   onDestroy(() => {
     URL.revokeObjectURL(thumbnailSrc);

@@ -1,32 +1,61 @@
 <script lang="ts">
   import defaultShader from "$lib/shaders/default.wgsl?raw";
+  import showcaseShaders from "$lib/shaders/list.json";
 
   import { resolve } from "$app/paths";
-  import { database } from "$lib/Database";
+  import { database, type Project } from "$lib/Database";
   import { onMount } from "svelte";
 
   let { children }: WithChildren = $props();
 
-  async function setDefaultProject(): Promise<void> {
-    if (localStorage.getItem("hasAddedDefaultProject") === null) {
-      const thumbnail = await (
-        await fetch(resolve("/") + "default_thumbnail.png")
-      ).arrayBuffer();
-
-      await database.projects.add({
-        name: "My First Shader",
-        code: defaultShader,
-        thumbnail,
-        channels: [
-          new ArrayBuffer(),
-          new ArrayBuffer(),
-          new ArrayBuffer(),
-          new ArrayBuffer(),
-        ],
-      });
-
-      localStorage.setItem("hasAddedDefaultProject", "true");
+  async function loadBuiltins(): Promise<void> {
+    if (localStorage.getItem("loadedBuiltins") !== null) {
+      return;
     }
+
+    const defaultThumbnail = await (
+      await fetch(resolve("/") + "default_thumbnail.png")
+    ).arrayBuffer();
+
+    await database.projects.add({
+      name: "My First Shader",
+      code: defaultShader,
+      thumbnail: defaultThumbnail,
+      channels: [
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+        new ArrayBuffer(),
+      ],
+    });
+
+    const shaders: Project[] = [];
+    for (const shader of showcaseShaders) {
+      const folder = resolve("/") + `showcase/shaders/${shader.name}/`;
+
+      const code = await (await fetch(folder + "code.wgsl")).text();
+      const thumbnail = await (
+        await fetch(folder + "thumbnail.png")
+      ).arrayBuffer();
+      const channels: ArrayBuffer[] = [];
+
+      for (let i = 0; i < shader.channels; i++) {
+        channels.push(
+          await (await fetch(folder + `channel${i}.png`)).arrayBuffer()
+        );
+      }
+
+      shaders.push({
+        name: shader.name,
+        code,
+        thumbnail,
+        channels,
+      });
+    }
+
+    await database.showcase.bulkAdd(shaders);
+
+    localStorage.setItem("loadedBuiltins", "true");
   }
 
   onMount(async () => {
@@ -34,7 +63,7 @@
     import("monaco-editor");
 
     await database.open();
-    setDefaultProject();
+    loadBuiltins();
   });
 </script>
 

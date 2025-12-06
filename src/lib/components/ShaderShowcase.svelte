@@ -1,50 +1,9 @@
 <script lang="ts">
-  import { resolve } from "$app/paths";
-  import type { Project } from "$lib/Database";
   import Shader from "./Shader.svelte";
+  import { database } from "$lib/Database";
+  import { liveQuery } from "dexie";
 
-  const shaders = getShaders();
-
-  async function getShaders(): Promise<Project[]> {
-    const SHADERS = ["[SIG15] EntryLevel"];
-    const promises: Promise<Project>[] = SHADERS.map(async (shader) => {
-      const shaderSource = await (
-        await fetch(resolve("/") + `showcase/shaders/${shader}.wgsl`)
-      ).text();
-      const thumbnail = await (
-        await fetch(resolve("/") + `showcase/thumbnails/${shader}.png`)
-      ).arrayBuffer();
-      const data = await (
-        await fetch(resolve("/") + `showcase/shaders/${shader}.json`)
-      ).json();
-      const channelCount: number = data.channels;
-      const channels = [
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-      ];
-
-      for (let i = 0; i < channelCount; i++) {
-        channels[i] = await (
-          await fetch(
-            resolve("/") + `showcase/shaders/channels/${shader}${i}.png`
-          )
-        ).arrayBuffer();
-      }
-
-      const project: Project = {
-        name: shader,
-        code: shaderSource,
-        thumbnail,
-        channels,
-      };
-
-      return project;
-    });
-
-    return Promise.all(promises);
-  }
+  const shaders = liveQuery(() => database.showcase.toArray());
 </script>
 
 <h2>Showcase</h2>
@@ -52,19 +11,17 @@
 
 <br />
 
-{#await shaders}
-  <p>Loading showcase...</p>
-{:then shaders}
+{#if shaders}
   <div class="centre">
     <div class="shaders">
-      {#each shaders as shader (shader.name)}
+      {#each $shaders as shader (shader.name)}
         <div class="shader">
-          <Shader project={shader} />
+          <Shader project={shader} showcase={true} />
         </div>
       {/each}
     </div>
   </div>
-{/await}
+{/if}
 
 <style lang="scss">
   .shaders {
