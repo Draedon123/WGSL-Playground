@@ -14,7 +14,7 @@
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
 
   $effect(() => {
-    editor.getModel()?.setValue(project?.code ?? "");
+    editor?.getModel()?.setValue(project?.code ?? "");
   });
 
   onMount(async () => {
@@ -36,7 +36,7 @@
   });
 
   onDestroy(() => {
-    monaco.editor.getModels().forEach((model) => model.dispose());
+    monaco?.editor.getModels().forEach((model) => model.dispose());
     editor?.dispose();
   });
 </script>
@@ -77,6 +77,17 @@
 
   .editor {
     width: 50%;
+  }
+
+  @media screen and (max-width: 1000px) {
+    .main {
+      flex-direction: column;
+    }
+
+    canvas,
+    .editor {
+      width: 100%;
+    }
   }
 
   .centre {
