@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import shaderTemplate from "$lib/shaderTemplate.wgsl?raw";
 
   // type Props = {};
 
@@ -22,7 +23,9 @@
       return null;
     }
 
-    const shader = device.createShaderModule({ code });
+    const shader = device.createShaderModule({
+      code: shaderTemplate + code,
+    });
     const compilationInfo = await shader.getCompilationInfo();
 
     if (compilationInfo.messages.length > 0) {
@@ -33,6 +36,7 @@
       layout: renderPipelineLayout,
       vertex: {
         module: shader,
+        entryPoint: "_vertexMain",
       },
       fragment: {
         module: shader,

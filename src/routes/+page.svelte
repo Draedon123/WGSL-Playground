@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { liveQuery } from "dexie";
   import { database } from "$lib/Database";
+  import defaultShader from "$lib/default.wgsl?raw";
 
   let redirect: HTMLAnchorElement;
 
@@ -38,8 +39,7 @@
     if (localStorage.getItem("hasAddedDefaultProject") === null) {
       await database.projects.add({
         name: "Default",
-        // TODO: add default code
-        code: "",
+        code: defaultShader,
       });
 
       localStorage.setItem("hasAddedDefaultProject", "true");
