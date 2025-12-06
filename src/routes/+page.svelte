@@ -38,7 +38,7 @@
   async function setDefaultProject(): Promise<void> {
     if (localStorage.getItem("hasAddedDefaultProject") === null) {
       await database.projects.add({
-        name: "Default",
+        name: "My First Shader",
         code: defaultShader,
       });
 
