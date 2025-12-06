@@ -1,5 +1,5 @@
 <main>
-  <h1>Project Showcase</h1>
+  <h1>Project not found!</h1>
 </main>
 
 <style lang="scss">
