@@ -22,7 +22,7 @@ class Texture {
     return this.texture !== undefined;
   }
 
-  public initialise(device: GPUDevice): void {
+  public initialise(device: GPUDevice): this {
     this.texture = device.createTexture({
       label: this.label,
       size: [this.width, this.height],
@@ -47,6 +47,8 @@ class Texture {
         height: this.height,
       }
     );
+
+    return this;
   }
 
   public static async fetch(url: string, label?: string): Promise<Texture> {
@@ -70,6 +72,10 @@ class Texture {
 
   private static async toBitmap(url: string): Promise<ImageBitmap> {
     return await createImageBitmap(await (await fetch(url)).blob());
+  }
+
+  public destroy(): void {
+    this.texture?.destroy();
   }
 }
 

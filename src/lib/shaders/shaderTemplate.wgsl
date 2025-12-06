@@ -16,6 +16,12 @@ struct _Parameters {
 }
 
 @group(0) @binding(0) var <uniform> params: _Parameters;
+@group(0) @binding(1) var textureSampler: sampler;
+
+@group(1) @binding (0) var channel0: texture_2d<f32>;
+@group(1) @binding (1) var channel1: texture_2d<f32>;
+@group(1) @binding (2) var channel2: texture_2d<f32>;
+@group(1) @binding (3) var channel3: texture_2d<f32>;
 
 const VERTICES: array<vec2f, 3> = array(
   vec2f(-1.0,  3.0),

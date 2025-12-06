@@ -14,6 +14,7 @@
   import { Loop } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
   import { onDestroy, onMount } from "svelte";
+  import { Texture } from "$lib/Texture";
 
   type Props = {
     width: number;
@@ -32,11 +33,15 @@
   let gpu: GPUCanvasContext;
   let adapter: GPUAdapter;
   let device: GPUDevice;
-  let bindGroupLayout: GPUBindGroupLayout;
-  let bindGroup: GPUBindGroup;
+  let bindGroupLayout0: GPUBindGroupLayout;
+  let bindGroup0: GPUBindGroup;
+  let bindGroupLayout1: GPUBindGroupLayout;
+  let bindGroup1: GPUBindGroup;
+  let sampler: GPUSampler;
   let renderPipelineLayout: GPUPipelineLayout;
   let renderPipeline: GPURenderPipeline | null = null;
   let settingsBuffer: GPUBuffer;
+  let channels: Texture[];
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<void> {
@@ -150,7 +155,8 @@
       ],
     });
 
-    renderPass.setBindGroup(0, bindGroup);
+    renderPass.setBindGroup(0, bindGroup0);
+    renderPass.setBindGroup(1, bindGroup1);
     renderPass.setPipeline(renderPipeline);
 
     renderPass.draw(3);
@@ -217,29 +223,73 @@
       usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
     });
 
-    bindGroupLayout = device.createBindGroupLayout({
+    bindGroupLayout0 = device.createBindGroupLayout({
       entries: [
         {
           binding: 0,
           buffer: { type: "uniform" },
           visibility: GPUShaderStage.FRAGMENT,
         },
+        {
+          binding: 1,
+          sampler: {},
+          visibility: GPUShaderStage.FRAGMENT,
+        },
+      ],
+    });
+
+    bindGroupLayout1 = device.createBindGroupLayout({
+      entries: [
+        {
+          binding: 0,
+          texture: {},
+          visibility: GPUShaderStage.FRAGMENT,
+        },
+        {
+          binding: 1,
+          texture: {},
+          visibility: GPUShaderStage.FRAGMENT,
+        },
+        {
+          binding: 2,
+          texture: {},
+          visibility: GPUShaderStage.FRAGMENT,
+        },
+        {
+          binding: 3,
+          texture: {},
+          visibility: GPUShaderStage.FRAGMENT,
+        },
       ],
     });
 
     renderPipelineLayout = device.createPipelineLayout({
-      bindGroupLayouts: [bindGroupLayout],
+      bindGroupLayouts: [bindGroupLayout0, bindGroupLayout1],
     });
 
-    bindGroup = device.createBindGroup({
-      layout: bindGroupLayout,
+    sampler = device.createSampler();
+    channels = [
+      Texture.colour(0, 0, 0, 255).initialise(device),
+      Texture.colour(0, 0, 0, 255).initialise(device),
+      Texture.colour(0, 0, 0, 255).initialise(device),
+      Texture.colour(0, 0, 0, 255).initialise(device),
+    ];
+
+    bindGroup0 = device.createBindGroup({
+      layout: bindGroupLayout0,
       entries: [
         {
           binding: 0,
           resource: { buffer: settingsBuffer },
         },
+        {
+          binding: 1,
+          resource: sampler,
+        },
       ],
     });
+
+    createBindGroup1();
 
     device.pushErrorScope("validation");
 
@@ -247,6 +297,38 @@
       await recompile(mostRecentCode);
     }
   });
+
+  function createBindGroup1() {
+    if (
+      adapter === undefined ||
+      device === undefined ||
+      bindGroupLayout1 === undefined
+    ) {
+      return;
+    }
+
+    bindGroup1 = device.createBindGroup({
+      layout: bindGroupLayout1,
+      entries: [
+        {
+          binding: 0,
+          resource: channels[0].texture.createView(),
+        },
+        {
+          binding: 1,
+          resource: channels[1].texture.createView(),
+        },
+        {
+          binding: 2,
+          resource: channels[2].texture.createView(),
+        },
+        {
+          binding: 3,
+          resource: channels[3].texture.createView(),
+        },
+      ],
+    });
+  }
 
   onDestroy(() => {
     stop();
