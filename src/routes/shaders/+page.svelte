@@ -27,7 +27,7 @@
         : undefined
   );
 
-  onMount(async () => {
+  onMount(() => {
     hash = location.hash;
   });
 </script>
