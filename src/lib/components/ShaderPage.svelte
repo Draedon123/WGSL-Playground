@@ -42,6 +42,17 @@
     });
   }
 
+  async function nameOnChange(event: {
+    currentTarget: HTMLInputElement;
+  }): Promise<void> {
+    const newName = event.currentTarget.value;
+
+    project.name = newName;
+    await database.projects.update(project, {
+      name: newName,
+    });
+  }
+
   onMount(async () => {
     id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
 
@@ -80,7 +91,15 @@
   }}
 />
 
-<h1>{project.name}</h1>
+<div class="header">
+  <input
+    type="text"
+    title="Click to rename!"
+    name="project-name"
+    onchange={nameOnChange}
+    value={project.name}
+  />
+</div>
 
 <div class="centre">
   <div class="main">
@@ -131,8 +150,29 @@
 </div>
 
 <style lang="scss">
-  h1 {
-    text-align: center;
+  $header-height: 2rem;
+  .header {
+    display: flex;
+    justify-content: center;
+    height: $header-height;
+    padding: 8px 0;
+
+    input {
+      margin: 0;
+      border: 2px solid transparent;
+      padding: 5px 0;
+
+      font-size: calc(0.8 * $header-height);
+      width: max-content;
+
+      text-align: center;
+      font-weight: 600;
+
+      transition: border-color 0.3s;
+      &:hover {
+        border-color: #000;
+      }
+    }
   }
 
   .main {
