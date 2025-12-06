@@ -4,8 +4,8 @@
   import { database, type Project } from "$lib/Database";
   import "monaco-editor/min/vs/editor/editor.main.css";
   import ShaderPage from "../../lib/components/ShaderPage.svelte";
-  import ShaderShowcase from "$lib/components/ShaderShowcase.svelte";
   import Shader404 from "$lib/components/Shader404.svelte";
+  import ShaderList from "$lib/components/ShaderList.svelte";
 
   let hash = $state("");
   let id = $derived(parseInt(hash === "" ? "0" : hash.slice(1)));
@@ -29,10 +29,12 @@
   }}
 />
 
-{#if $project === undefined && hash === ""}
-  <ShaderShowcase />
-{:else if $project === undefined && hash !== ""}
-  <Shader404 />
-{:else}
-  <ShaderPage project={$project as Project} />
-{/if}
+<main>
+  {#if $project === undefined && hash === ""}
+    <ShaderList />
+  {:else if $project === undefined && hash !== ""}
+    <Shader404 />
+  {:else}
+    <ShaderPage project={$project as Project} />
+  {/if}
+</main>

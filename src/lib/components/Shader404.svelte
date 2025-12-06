@@ -1,6 +1,4 @@
-<main>
-  <h1>Project not found!</h1>
-</main>
+<h1>Project not found!</h1>
 
 <style lang="scss">
   h1 {

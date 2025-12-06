@@ -1,9 +1,0 @@
-<main>
-  <h1>Project Showcase</h1>
-</main>
-
-<style lang="scss">
-  h1 {
-    text-align: center;
-  }
-</style>

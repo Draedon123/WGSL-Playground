@@ -1,17 +1,11 @@
 <script lang="ts">
   import { resolve } from "$app/paths";
   import { onMount } from "svelte";
-  import { liveQuery } from "dexie";
   import { database } from "$lib/Database";
   import defaultShader from "$lib/shaders/default.wgsl?raw";
+  import ShaderShowcase from "$lib/components/ShaderShowcase.svelte";
 
   let redirect: HTMLAnchorElement;
-
-  let projects = liveQuery(() =>
-    database.projects
-      .toArray()
-      .then((projects) => projects.sort((a, b) => a.name.localeCompare(b.name)))
-  );
 
   onMount(() => {
     setDefaultProject();
@@ -54,12 +48,15 @@
 <main>
   <h1>WGSL Playground</h1>
 
-  {#each $projects as project (project.id)}
-    <a href="{resolve('/shaders')}#{project.id}">{project.name}</a>
-    <br />
-  {/each}
+  <ShaderShowcase />
 </main>
 
 <!-- svelte-ignore a11y_consider_explicit_label -->
 <!-- svelte-ignore a11y_missing_attribute -->
 <a style="display: none;" bind:this={redirect}></a>
+
+<style lang="scss">
+  h1 {
+    text-align: center;
+  }
+</style>

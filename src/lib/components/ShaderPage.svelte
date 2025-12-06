@@ -80,57 +80,55 @@
   }}
 />
 
-<main>
-  <h1>{project.name}</h1>
+<h1>{project.name}</h1>
 
-  <div class="centre">
-    <div class="main">
-      <div class="canvas">
-        <ShaderCanvas
-          bind:this={shaderCanvas}
-          bind:logs
-          width={800}
-          height={450}
-        />
-      </div>
-      <!-- svelte-ignore a11y_no_static_element_interactions -->
-      <div
-        class="editor"
-        bind:this={editorElement}
-        onkeydown={editorOnKeyDown}
-      ></div>
-      <div class="logs">
-        {#if logs !== null}
-          {#snippet Log(
-            messages: GPUCompilationMessage[],
-            type: string,
-            header: string
-          )}
-            {#if messages.length > 0}
-              <h1>{header}</h1>
+<div class="centre">
+  <div class="main">
+    <div class="canvas">
+      <ShaderCanvas
+        bind:this={shaderCanvas}
+        bind:logs
+        width={800}
+        height={450}
+      />
+    </div>
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="editor"
+      bind:this={editorElement}
+      onkeydown={editorOnKeyDown}
+    ></div>
+    <div class="logs">
+      {#if logs !== null}
+        {#snippet Log(
+          messages: GPUCompilationMessage[],
+          type: string,
+          header: string
+        )}
+          {#if messages.length > 0}
+            <h1>{header}</h1>
 
-              <ul>
-                {#each messages as message}
-                  <li>
-                    {type} at {message.lineNum}:{message.linePos}. {message.message}.
-                    Source: {project.code.slice(
-                      message.offset,
-                      message.offset + message.length
-                    )}
-                  </li>
-                {/each}
-              </ul>
-            {/if}
-          {/snippet}
+            <ul>
+              {#each messages as message}
+                <li>
+                  {type} at {message.lineNum}:{message.linePos}. {message.message}.
+                  Source: {project.code.slice(
+                    message.offset,
+                    message.offset + message.length
+                  )}
+                </li>
+              {/each}
+            </ul>
+          {/if}
+        {/snippet}
 
-          {@render Log(logs.errors, "Error", "Errors")}
-          {@render Log(logs.warnings, "Warning", "Warnings")}
-          {@render Log(logs.info, "Info", "Info")}
-        {/if}
-      </div>
+        {@render Log(logs.errors, "Error", "Errors")}
+        {@render Log(logs.warnings, "Warning", "Warnings")}
+        {@render Log(logs.info, "Info", "Info")}
+      {/if}
     </div>
   </div>
-</main>
+</div>
 
 <style lang="scss">
   h1 {
