@@ -14,8 +14,7 @@
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
 
   $effect(() => {
-    editor?.getModel()?.dispose();
-    editor?.setModel(monaco.editor.createModel(project?.code ?? "", "wgsl"));
+    editor.getModel()?.setValue(project?.code ?? "");
   });
 
   onMount(async () => {
@@ -33,11 +32,11 @@
       theme: "vs-dark",
     });
 
-    editor.getModel()?.dispose();
     editor.setModel(monaco.editor.createModel(project?.code ?? "", "wgsl"));
   });
 
   onDestroy(() => {
+    monaco.editor.getModels().forEach((model) => model.dispose());
     editor?.dispose();
   });
 </script>
@@ -66,7 +65,6 @@
 
   .main {
     display: flex;
-    border: 1px solid #000;
 
     width: 80%;
     min-height: 50vh;
