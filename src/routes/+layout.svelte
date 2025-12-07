@@ -10,26 +10,16 @@
   let { children }: WithChildren = $props();
 
   async function loadBuiltins(): Promise<void> {
-    if (localStorage.getItem("loadedBuiltins") !== null) {
+    if (
+      parseInt(localStorage.getItem("shaderVersion") ?? "-1") ===
+      showcaseShaders.version
+    ) {
       return;
     }
 
-    const defaultThumbnail = await fetchBuffer("default_thumbnail.png");
-
-    await database.projects.add({
-      name: "My First Shader",
-      code: defaultShader,
-      thumbnail: defaultThumbnail,
-      channels: [
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-        new ArrayBuffer(),
-      ],
-    });
-
+    await database.showcase.clear();
     const shaders: Project[] = [];
-    for (const shader of showcaseShaders) {
+    for (const shader of showcaseShaders.shaders) {
       const folder = `showcase/shaders/${shader.name}/`;
 
       const code = await fetchText(folder + "code.wgsl");
@@ -55,7 +45,7 @@
 
     await database.showcase.bulkAdd(shaders);
 
-    localStorage.setItem("loadedBuiltins", "true");
+    localStorage.setItem("shaderVersion", showcaseShaders.version.toString());
   }
 
   onMount(async () => {

@@ -1,26 +1,29 @@
-[
-  {
-    "name": "Seascape",
-    "channels": 0
-  },
-  {
-    "name": "Phantom Star for CineShader",
-    "channels": 0
-  },
-  {
-    "name": "Flame",
-    "channels": 0
-  },
-  {
-    "name": "Octagrams",
-    "channels": 0
-  },
-  {
-    "name": "Creation by Silexars",
-    "channels": 0
-  },
-  {
-    "name": "[SIG15] EntryLevel",
-    "channels": 1
-  }
-]
+{
+  "version": 1,
+  "shaders": [
+    {
+      "name": "Seascape",
+      "channels": 0
+    },
+    {
+      "name": "Phantom Star for CineShader",
+      "channels": 0
+    },
+    {
+      "name": "Flame",
+      "channels": 0
+    },
+    {
+      "name": "Octagrams",
+      "channels": 0
+    },
+    {
+      "name": "Creation by Silexars",
+      "channels": 0
+    },
+    {
+      "name": "[SIG15] EntryLevel",
+      "channels": 1
+    }
+  ]
+}
