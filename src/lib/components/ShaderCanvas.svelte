@@ -17,6 +17,7 @@
   import { BufferWriter } from "$lib/BufferWriter";
   import { onDestroy, onMount } from "svelte";
   import { Texture } from "$lib/Texture";
+  import { GPUTimer } from "$lib/GPUTimer";
 
   type Props = {
     width: number;
@@ -42,10 +43,13 @@
   let sampler: GPUSampler;
   let renderPipelineLayout: GPUPipelineLayout;
   let renderPipeline: GPURenderPipeline | null = null;
+  let gpuTimer: GPUTimer;
   let settingsBuffer: GPUBuffer;
   let channels: Texture[];
 
   let running = $state(false);
+  let frameTime_ms = $state(0);
+  let fps = $derived(frameTime_ms === 0 ? 0 : 1000 / frameTime_ms);
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<void> {
@@ -99,6 +103,7 @@
       },
     });
 
+    gpuTimer.reset();
     restart();
   }
 
@@ -180,7 +185,7 @@
     }
 
     const commandEncoder = device.createCommandEncoder();
-    const renderPass = commandEncoder.beginRenderPass({
+    const renderPass = gpuTimer.beginRenderPass(commandEncoder, {
       colorAttachments: [
         {
           loadOp: "clear",
@@ -245,11 +250,18 @@
       return;
     }
 
-    device = await adapter.requestDevice();
+    device = await adapter.requestDevice({
+      requiredFeatures: requestFeatures(adapter, "timestamp-query"),
+    });
 
     gpu.configure({
       device,
       format: CANVAS_FORMAT,
+    });
+
+    gpuTimer = new GPUTimer(device, (time) => {
+      const milliseconds = time / 1e6;
+      frameTime_ms = milliseconds;
     });
 
     settingsBuffer = device.createBuffer({
@@ -380,6 +392,21 @@
     });
   }
 
+  function requestFeatures(
+    adapter: GPUAdapter,
+    ...features: GPUFeatureName[]
+  ): GPUFeatureName[] {
+    return features.filter((feature) => {
+      const supported = adapter.features.has(feature);
+
+      if (!supported) {
+        console.warn(`GPU Feature ${feature} not supported`);
+      }
+
+      return supported;
+    });
+  }
+
   onDestroy(() => {
     stop();
     device?.destroy();
@@ -397,6 +424,8 @@
       alt={running ? "Pause" : "Play"}
       onclick={toggle}
     />
+    <span>{fps.toFixed(2)}fps</span>
+    <span>{frameTime_ms.toFixed(2)}ms</span>
   </div>
 </div>
 
@@ -414,6 +443,7 @@
   .controls {
     display: flex;
     align-items: center;
+    gap: 1ch;
 
     height: 2em;
     border: 1px solid #000;
