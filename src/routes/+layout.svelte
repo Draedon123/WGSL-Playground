@@ -83,7 +83,7 @@
     >
   {/snippet}
 
-  {@render Item(resolve("/shaders"), "Shaders")}
+  {@render Item(resolve("/shaders"), "My Shaders")}
   {@render Item(resolve("/"), "Home")}
 </nav>
 

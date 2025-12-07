@@ -149,6 +149,19 @@
     loop.restart();
   }
 
+  export function save(): Promise<ArrayBuffer> {
+    return new Promise<ArrayBuffer>((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (blob === null) {
+          reject();
+          return;
+        }
+
+        blob.arrayBuffer().then(resolve);
+      });
+    });
+  }
+
   function render(): void {
     if (
       adapter === undefined ||

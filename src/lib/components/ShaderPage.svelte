@@ -93,9 +93,15 @@
 
     if (!showcase) {
       project.code = newCode;
-      await database.projects.update(project, {
-        code: project.code,
-      });
+      setTimeout(async () => {
+        debugger;
+        const thumbnail = await shaderCanvas.save();
+
+        await database.projects.update(project, {
+          code: project.code,
+          thumbnail,
+        });
+      }, 10);
     }
   }
 
