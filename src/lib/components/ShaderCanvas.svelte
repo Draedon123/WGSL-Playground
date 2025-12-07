@@ -516,7 +516,14 @@
       align-items: center;
 
       input[type="number"] {
-        width: 5ch;
+        width: 6ch;
+        padding: 3px;
+        background: #fff3;
+        border: 1px solid #fff3;
+        border-radius: 5px;
+        color: white;
+        font-family: monospace;
+        font-size: large;
       }
     }
   }
