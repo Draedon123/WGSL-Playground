@@ -33,7 +33,11 @@
 
 <style lang="scss">
   .container {
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    row-gap: 2px;
 
     width: 100%;
     height: calc(100% - 5px);
@@ -60,9 +64,13 @@
 
   h2 {
     text-align: center;
+    width: 80%;
+    height: 100%;
+    border-bottom: 1px solid #fff3;
   }
 
   img {
     width: 100%;
+    align-self: flex-end;
   }
 </style>
