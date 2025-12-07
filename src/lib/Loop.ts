@@ -55,15 +55,28 @@ class Loop {
 
   public toggle(): void {
     if (this.running) {
-      this.stop();
+      this.pause();
     } else {
-      this.start();
+      this.resume();
     }
   }
 
   public restart(): void {
     this.stop();
     this.start();
+  }
+
+  public pause(): void {
+    this.stop();
+  }
+
+  public resume(): void {
+    if (this.running) {
+      return;
+    }
+
+    this.lastFrameTime = -1;
+    this.frameID = requestAnimationFrame(this.tick.bind(this));
   }
 
   public addCallback(callback: LoopCallback): void {

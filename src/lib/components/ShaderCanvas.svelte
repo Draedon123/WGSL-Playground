@@ -10,6 +10,8 @@
 
 <script lang="ts">
   import shaderTemplate from "$lib/shaders/shaderTemplate.wgsl?raw";
+  import pause from "$lib/icons/pause.svg";
+  import play from "$lib/icons/play.svg";
 
   import { Loop } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
@@ -42,6 +44,8 @@
   let renderPipeline: GPURenderPipeline | null = null;
   let settingsBuffer: GPUBuffer;
   let channels: Texture[];
+
+  let running = $state(false);
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<void> {
@@ -135,18 +139,22 @@
 
   export function start(): void {
     loop.start();
+    running = true;
   }
 
   export function stop(): void {
     loop.stop();
+    running = false;
   }
 
   export function toggle(): void {
     loop.toggle();
+    running = !running;
   }
 
   export function restart(): void {
     loop.restart();
+    running = true;
   }
 
   export function save(): Promise<ArrayBuffer> {
@@ -380,13 +388,39 @@
   });
 </script>
 
-<canvas bind:this={canvas} {width} {height}></canvas>
+<div class="container">
+  <canvas bind:this={canvas} {width} {height}></canvas>
+  <div class="controls">
+    <input
+      type="image"
+      src={running ? pause : play}
+      alt={running ? "Pause" : "Play"}
+      onclick={toggle}
+    />
+  </div>
+</div>
 
 <style lang="scss">
+  .container,
+  canvas {
+    width: 100%;
+    border-radius: 4px;
+  }
+
   canvas {
     background-color: #000;
-    width: 100%;
+  }
 
+  .controls {
+    display: flex;
+    align-items: center;
+
+    height: 2em;
+    border: 1px solid #000;
     border-radius: 4px;
+
+    input[type="image"] {
+      height: 2em;
+    }
   }
 </style>
