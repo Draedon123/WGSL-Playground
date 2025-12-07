@@ -18,7 +18,7 @@
       <p>Loading...</p>
     {:else if $projects.length === 0}
       <p>
-        No projects found! Go create a new one from the navigation bar at the
+        No shaders found! Go create a new one from the navigation bar at the
         top!
       </p>
     {:else}

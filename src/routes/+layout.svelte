@@ -1,5 +1,4 @@
 <script lang="ts">
-  import defaultShader from "$lib/shaders/default.wgsl?raw";
   import showcaseShaders from "$lib/shaders/list.json";
 
   import { resolve } from "$app/paths";
