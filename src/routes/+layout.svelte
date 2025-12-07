@@ -117,8 +117,10 @@
 
     width: 100vw;
     height: $navigation-height;
-    font-size: calc(0.7 * $navigation-height);
     align-content: center;
+
+    z-index: 999;
+    font-size: calc(0.7 * $navigation-height);
 
     background-color: #3338;
     border-bottom: 1px solid #fff4;
