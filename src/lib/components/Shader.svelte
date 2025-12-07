@@ -3,7 +3,6 @@
   import { onDestroy } from "svelte";
   import { setHash } from "$lib/hash";
   import type { Project } from "$lib/Database";
-  import { fromArrayBuffer } from "$lib/base64";
 
   type Props = {
     project: Project;

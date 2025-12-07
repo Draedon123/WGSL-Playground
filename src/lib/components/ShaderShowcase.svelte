@@ -11,7 +11,7 @@
 
 <br />
 
-{#if shaders}
+{#if $shaders}
   <div class="centre">
     <div class="shaders">
       {#each $shaders as shader (shader.name)}

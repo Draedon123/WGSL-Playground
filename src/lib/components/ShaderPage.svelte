@@ -17,7 +17,6 @@
   let { project, showcase }: Props = $props();
 
   let monaco: typeof import("monaco-editor");
-  let id = $state(1);
   let shaderCanvas: ShaderCanvas;
   let editorElement: HTMLDivElement;
   let editor: import("monaco-editor").editor.IStandaloneCodeEditor;
@@ -84,7 +83,9 @@
         message.lineNum + (messageSection.match(/\n/g)?.length ?? 0),
       endColumn:
         lines.length > 1
-          ? messageSection.split("\n").at(-1)!.length
+          ? // lines.at(-1) is defined since the length of the array is > 1
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            lines.at(-1)!.length
           : message.linePos + message.length,
       message: `${type}: ${message.message}`,
     };
@@ -105,7 +106,6 @@
     if (!showcase) {
       project.code = newCode;
       setTimeout(async () => {
-        debugger;
         const thumbnail = await shaderCanvas.save();
 
         await database.projects.update(project, {
@@ -132,8 +132,6 @@
   }
 
   onMount(async () => {
-    id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
-
     // avoid reference to `window` during ssr
     monaco = await import("monaco-editor");
 
@@ -164,20 +162,14 @@
   <title>WGSL Playground - {project.name}</title>
 </svelte:head>
 
-<svelte:window
-  onhashchange={() => {
-    id = parseInt(location.hash === "" ? "0" : location.hash.slice(1));
-  }}
-/>
-
 <div class="header">
   <input
     type="text"
     title="Click to rename!"
     name="project-name"
     onchange={nameOnChange}
-    value={project.name}
     disabled={showcase}
+    value={project.name}
   />
 </div>
 
