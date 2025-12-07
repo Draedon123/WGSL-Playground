@@ -250,21 +250,21 @@
 
   onMount(async () => {
     if (!("gpu" in navigator)) {
-      console.error("WebGPU not supported by your browser/device");
+      alert("WebGPU not supported by your browser/device");
       return;
     }
 
     gpu = canvas.getContext("webgpu") as GPUCanvasContext;
 
     if (gpu === null) {
-      console.error("Could not get WebGPU Canvas Rendering Context");
+      alert("Could not get WebGPU Canvas Rendering Context");
       return;
     }
 
     adapter = (await navigator.gpu.requestAdapter()) as GPUAdapter;
 
     if (adapter === null) {
-      console.error(
+      alert(
         "Could not find valid GPU Adapter. Maybe WebGPU isn't supported by your browser/device?"
       );
       return;
