@@ -490,12 +490,19 @@
     align-items: center;
     gap: 1ch;
 
-    height: 2em;
+    height: 2.5em;
     border: 1px solid #000;
     border-radius: 4px;
 
     font-family: monospace;
     font-size: large;
+
+    overflow-x: scroll;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
 
     input[type="image"] {
       height: 2em;
