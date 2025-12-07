@@ -12,6 +12,10 @@
     "channels": 0
   },
   {
+    "name": "Octagrams",
+    "channels": 0
+  },
+  {
     "name": "[SIG15] EntryLevel",
     "channels": 1
   }
