@@ -165,7 +165,7 @@
 <div class="header">
   <input
     type="text"
-    title="Click to rename!"
+    title={showcase ? "Readonly!" : "Click to rename!"}
     name="project-name"
     onchange={nameOnChange}
     disabled={showcase}
@@ -231,22 +231,20 @@
 
     input {
       margin: 0;
-      border: 2px solid transparent;
       padding: 5px 0;
+      border: none;
 
       font-size: calc(0.8 * $header-height);
-      width: max-content;
+      width: 100%;
 
       text-align: center;
       font-weight: 600;
 
-      transition: border-color 0.3s;
-      &:hover:not([disabled]) {
-        border-color: #000;
-      }
+      color: #fff;
+      background-color: transparent;
 
-      &[disabled] {
-        color: #000;
+      &:focus {
+        outline: none;
       }
     }
   }

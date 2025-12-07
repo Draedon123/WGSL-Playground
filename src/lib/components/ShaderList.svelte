@@ -33,7 +33,7 @@
     justify-content: center;
 
     width: 90%;
-    gap: 15px;
+    gap: 40px;
   }
 
   .shader {

@@ -34,7 +34,7 @@
 
       const code = await fetchText(folder + "code.wgsl");
       const thumbnail = await fetchBuffer(folder + "thumbnail.png");
-      const channels: ArrayBuffer[] = [
+      const channels: [ArrayBuffer, ArrayBuffer, ArrayBuffer, ArrayBuffer] = [
         new ArrayBuffer(),
         new ArrayBuffer(),
         new ArrayBuffer(),
@@ -67,6 +67,15 @@
   });
 </script>
 
+<svelte:head>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+    rel="stylesheet"
+  />
+</svelte:head>
+
 <nav>
   {#snippet Item(href: string, content: string)}
     <a
@@ -87,8 +96,19 @@
   {@render children?.()}
 </div>
 
+<div
+  class="background"
+  style="background-image: url({resolve('/')}background.jpg)"
+></div>
+<div class="filter"></div>
+
 <style lang="scss">
   $navigation-height: 2.5rem;
+
+  :global(*):where(*) {
+    color: #fff;
+    font-family: Montserrat, sans-serif;
+  }
 
   nav {
     position: fixed;
@@ -100,7 +120,8 @@
     font-size: calc(0.7 * $navigation-height);
     align-content: center;
 
-    background-color: #666;
+    background-color: #3338;
+    border-bottom: 1px solid #fff4;
 
     a {
       color: #fff;
@@ -122,6 +143,32 @@
   }
 
   .content {
-    margin-top: $navigation-height;
+    margin-top: calc($navigation-height + 10px);
+  }
+
+  .background,
+  .filter {
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100vw;
+    height: 100vh;
+  }
+
+  .background {
+    z-index: -2;
+    background-size: cover;
+  }
+
+  .filter {
+    z-index: -1;
+    backdrop-filter: blur(7px);
+    background: radial-gradient(
+      circle at center,
+      #0004 0%,
+      #0009 60%,
+      #000c 100%
+    );
   }
 </style>

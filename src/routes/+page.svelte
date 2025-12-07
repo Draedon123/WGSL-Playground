@@ -32,7 +32,9 @@
 </svelte:head>
 
 <main>
-  <h1>WGSL Playground</h1>
+  <div class="title">
+    <h1>WGSL Playground</h1>
+  </div>
 
   <ShaderShowcase />
 </main>
@@ -42,7 +44,15 @@
 <a style="display: none;" bind:this={redirect}></a>
 
 <style lang="scss">
+  .title {
+    display: flex;
+    justify-content: center;
+
+    margin-top: 1.25em;
+    margin-bottom: 1.25em;
+  }
+
   h1 {
-    text-align: center;
+    width: max-content;
   }
 </style>

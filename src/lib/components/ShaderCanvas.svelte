@@ -491,14 +491,17 @@
     gap: 1ch;
 
     height: 2.5em;
-    border: 1px solid #000;
+    border: 1px solid #fff3;
     border-radius: 4px;
+    margin-bottom: 10px;
 
     font-family: monospace;
     font-size: large;
 
     overflow-x: scroll;
     scrollbar-width: none;
+
+    background-color: #fff3;
 
     &::-webkit-scrollbar {
       display: none;

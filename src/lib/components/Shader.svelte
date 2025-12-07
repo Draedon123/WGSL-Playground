@@ -44,15 +44,17 @@
     border-radius: 10px;
 
     cursor: pointer;
-    color: #000;
+    color: #fff;
+    background-color: #fff5;
     text-decoration: none;
+    box-shadow: #fff2 0px 4px 15px 3px;
 
     transition:
-      transform 0.15s ease-in,
-      box-shadow 0.15s;
+      transform 0.2s ease-in,
+      box-shadow 0.2s;
     &:hover {
       transform: scale(1.05);
-      box-shadow: #0006 0px 5px 15px;
+      box-shadow: #fff5 0px 4px 15px 3px;
     }
   }
 
