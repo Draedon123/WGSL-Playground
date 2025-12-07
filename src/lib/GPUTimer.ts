@@ -14,7 +14,6 @@ class GPUTimer {
   private readonly rollingAverage: RollingAverage;
 
   public onUpdate: GPUTimerOnUpdate;
-  private deviceLost: boolean;
 
   constructor(
     device: GPUDevice,
@@ -24,7 +23,6 @@ class GPUTimer {
     this.canTimestamp = device.features.has("timestamp-query");
     this.onUpdate = onUpdate;
     this.rollingAverage = new RollingAverage(50);
-    this.deviceLost = false;
 
     if (this.canTimestamp) {
       this.querySet = device.createQuerySet({
@@ -43,10 +41,6 @@ class GPUTimer {
         label: "GPUTimer Result Buffer",
         size: this.resolveBuffer.size,
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
-      });
-
-      device.lost.then(() => {
-        this.deviceLost = true;
       });
     }
 
@@ -82,13 +76,7 @@ class GPUTimer {
 
             this.onUpdate(time, linkedTimerSum);
           })
-          .catch((error) => {
-            if (this.deviceLost) {
-              return;
-            }
-
-            console.error(error);
-          });
+          .catch();
       });
     };
 
