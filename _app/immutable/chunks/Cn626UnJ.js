@@ -1,0 +1,1 @@
+import{r as a}from"./CYjs1OJ3.js";async function f(t){return(await fetch(a("/")+t)).text()}async function r(t){return(await fetch(a("/")+t)).arrayBuffer()}async function c(t){return(await fetch(a("/")+t)).blob()}export{f as a,c as b,r as f};
