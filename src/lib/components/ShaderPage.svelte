@@ -53,6 +53,11 @@
       return;
     }
 
+    console.log(
+      ...logs.errors.map((error) =>
+        createMarker(monaco.MarkerSeverity.Error, "Error", error)
+      )
+    );
     monaco.editor.setModelMarkers(model, "validation", [
       ...logs.errors.map((error) =>
         createMarker(monaco.MarkerSeverity.Error, "Error", error)
@@ -68,17 +73,19 @@
     type: string,
     message: GPUCompilationMessage
   ): import("monaco-editor").editor.IMarkerData {
+    const messageSection = project.code.slice(message.offset, message.length);
+    const lines = messageSection.split("\n");
+
     return {
       severity,
       startLineNumber: message.lineNum,
       startColumn: message.linePos,
       endLineNumber:
-        message.lineNum +
-        (project.code.slice(message.offset, message.length).match(/\n/g)
-          ?.length ?? 0),
+        message.lineNum + (messageSection.match(/\n/g)?.length ?? 0),
       endColumn:
-        project.code.slice(message.offset, message.length).split("\n").at(-1)
-          ?.length ?? message.linePos + message.offset,
+        lines.length > 1
+          ? messageSection.split("\n").at(-1)!.length
+          : message.linePos + message.length,
       message: `${type}: ${message.message}`,
     };
   }
