@@ -1,10 +1,14 @@
 [
   {
-    "name": "[SIG15] EntryLevel",
-    "channels": 1
-  },
-  {
     "name": "Seascape",
     "channels": 0
+  },
+  {
+    "name": "Phantom Star for CineShader",
+    "channels": 0
+  },
+  {
+    "name": "[SIG15] EntryLevel",
+    "channels": 1
   }
 ]
