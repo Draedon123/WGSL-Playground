@@ -14,11 +14,20 @@
 <h1>My Shaders</h1>
 <div class="centre">
   <div class="shader-container">
-    {#each $projects as project (project.id)}
-      <div class="shader">
-        <Shader {project} />
-      </div>
-    {/each}
+    {#if $projects === undefined}
+      <p>Loading...</p>
+    {:else if $projects.length === 0}
+      <p>
+        No projects found! Go create a new one from the navigation bar at the
+        top!
+      </p>
+    {:else}
+      {#each $projects as project (project.id)}
+        <div class="shader">
+          <Shader {project} />
+        </div>
+      {/each}
+    {/if}
   </div>
 </div>
 
