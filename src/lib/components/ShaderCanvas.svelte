@@ -51,6 +51,7 @@
   let running = $state(false);
   let frameTime_ms = $state(0);
   let fps = $derived(frameTime_ms === 0 ? 0 : 1000 / frameTime_ms);
+  let frame = $state(1);
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<void> {
@@ -236,6 +237,7 @@
 
     device.queue.writeBuffer(settingsBuffer, 0, bufferWriter.buffer);
 
+    frame = frameData.frame;
     render();
   });
 
@@ -437,6 +439,8 @@
     />
     <span>{fps.toFixed(2)}fps</span>
     <span>{frameTime_ms.toFixed(2)}ms</span>
+    <span>{frame}</span>
+    <span>{width}x{height}</span>
   </div>
 </div>
 
