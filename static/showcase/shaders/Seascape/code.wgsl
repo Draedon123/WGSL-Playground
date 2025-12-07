@@ -1,6 +1,5 @@
 // https://www.shadertoy.com/view/Ms2SD1
 // Licensed under https://creativecommons.org/licenses/by-nc-sa/3.0/
-// Usage of Shadetoy's builtin cubemap was removed
 // This is a WGSL port
 
 const NUM_STEPS: u32 = 32;
