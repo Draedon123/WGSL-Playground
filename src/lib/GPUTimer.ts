@@ -14,6 +14,7 @@ class GPUTimer {
   private readonly rollingAverage: RollingAverage;
 
   public onUpdate: GPUTimerOnUpdate;
+  private deviceLost: boolean;
 
   constructor(
     device: GPUDevice,
@@ -23,6 +24,7 @@ class GPUTimer {
     this.canTimestamp = device.features.has("timestamp-query");
     this.onUpdate = onUpdate;
     this.rollingAverage = new RollingAverage(50);
+    this.deviceLost = false;
 
     if (this.canTimestamp) {
       this.querySet = device.createQuerySet({
@@ -42,6 +44,10 @@ class GPUTimer {
         size: this.resolveBuffer.size,
         usage: GPUBufferUsage.COPY_DST | GPUBufferUsage.MAP_READ,
       });
+
+      device.lost.then(() => {
+        this.deviceLost = true;
+      });
     }
 
     const originalSubmitMethod = device.queue.submit.bind(device.queue);
@@ -57,23 +63,32 @@ class GPUTimer {
           return;
         }
 
-        this.resultBuffer.mapAsync(GPUMapMode.READ).then(() => {
-          const times = new BigInt64Array(this.resultBuffer.getMappedRange());
+        this.resultBuffer
+          .mapAsync(GPUMapMode.READ)
+          .then(() => {
+            const times = new BigInt64Array(this.resultBuffer.getMappedRange());
 
-          this.rollingAverage.addSample(Number(times[1] - times[0]));
-          this.resultBuffer.unmap();
+            this.rollingAverage.addSample(Number(times[1] - times[0]));
+            this.resultBuffer.unmap();
 
-          const time = this.rollingAverage.average;
-          const linkedTimerSum =
-            linkId === null
-              ? time
-              : GPUTimer.linkedTimers[linkId].reduce(
-                  (total, current) => total + current.time,
-                  0
-                );
+            const time = this.rollingAverage.average;
+            const linkedTimerSum =
+              linkId === null
+                ? time
+                : GPUTimer.linkedTimers[linkId].reduce(
+                    (total, current) => total + current.time,
+                    0
+                  );
 
-          this.onUpdate(time, linkedTimerSum);
-        });
+            this.onUpdate(time, linkedTimerSum);
+          })
+          .catch((error) => {
+            if (this.deviceLost) {
+              return;
+            }
+
+            console.error(error);
+          });
       });
     };
 
