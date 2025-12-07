@@ -14,3 +14,4 @@ A basic client-only editor for WGSL shaders, based on Shadertoy
 
 - https://fontawesome.com/icons/pause?f=classic&s=solid
 - https://fontawesome.com/icons/play?f=classic&s=solid
+- https://fontawesome.com/icons/backward-step?f=classic&s=solid

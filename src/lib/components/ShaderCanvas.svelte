@@ -10,10 +10,11 @@
 
 <script lang="ts">
   import shaderTemplate from "$lib/shaders/shaderTemplate.wgsl?raw";
+  import back from "$lib/icons/back.svg";
   import pause from "$lib/icons/pause.svg";
   import play from "$lib/icons/play.svg";
 
-  import { Loop } from "$lib/Loop";
+  import { Loop, type FrameData } from "$lib/Loop";
   import { BufferWriter } from "$lib/BufferWriter";
   import { onDestroy, onMount } from "svelte";
   import { Texture } from "$lib/Texture";
@@ -221,7 +222,7 @@
     device.queue.submit([commandEncoder.finish()]);
   }
 
-  loop.addCallback((frameData) => {
+  function tick(frameData: FrameData): void {
     if (
       adapter === undefined ||
       device === undefined ||
@@ -243,7 +244,9 @@
 
     frame = frameData.frame;
     render();
-  });
+  }
+
+  loop.addCallback(tick);
 
   onMount(async () => {
     if (!("gpu" in navigator)) {
@@ -437,9 +440,28 @@
   <div class="controls">
     <input
       type="image"
+      src={back}
+      alt="Restart time"
+      title="Restart time"
+      onclick={() => {
+        if (running) {
+          restart();
+        } else {
+          stop();
+          tick({
+            frame: 1,
+            deltaTime_ms: 0,
+            totalTime_ms: 0,
+          });
+        }
+      }}
+    />
+    <input
+      type="image"
       src={running ? pause : play}
       alt={running ? "Pause" : "Play"}
       onclick={toggle}
+      title={running ? "Pause" : "Play"}
     />
     <span>{fps.toFixed(2)}fps</span>
     <span>{frameTime_ms.toFixed(2)}ms</span>
