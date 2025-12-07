@@ -20,12 +20,16 @@
   import { GPUTimer } from "$lib/GPUTimer";
 
   type Props = {
-    width: number;
-    height: number;
+    width?: number;
+    height?: number;
     logs: ShaderLogs | null;
   };
 
-  let { width, height, logs = $bindable() }: Props = $props();
+  let {
+    width = $bindable(800),
+    height = $bindable(450),
+    logs = $bindable(),
+  }: Props = $props();
 
   const SETTINGS_BYTE_LENGTH: number = 6 * 4;
   const CANVAS_FORMAT: GPUTextureFormat = "rgba8unorm";
@@ -440,7 +444,11 @@
     <span>{fps.toFixed(2)}fps</span>
     <span>{frameTime_ms.toFixed(2)}ms</span>
     <span>{frame}</span>
-    <span>{width}x{height}</span>
+    <div class="dimensions">
+      <input type="number" name="width" id="width" bind:value={width} />
+      x
+      <input type="number" name="height" id="height" bind:value={height} />
+    </div>
   </div>
 </div>
 
@@ -464,8 +472,20 @@
     border: 1px solid #000;
     border-radius: 4px;
 
+    font-family: monospace;
+    font-size: large;
+
     input[type="image"] {
       height: 2em;
+    }
+
+    .dimensions {
+      display: flex;
+      align-items: center;
+
+      input[type="number"] {
+        width: 5ch;
+      }
     }
   }
 </style>

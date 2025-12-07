@@ -184,19 +184,16 @@
 <div class="centre">
   <div class="main">
     <div class="canvas">
-      <ShaderCanvas
-        bind:this={shaderCanvas}
-        bind:logs
-        width={800}
-        height={450}
-      />
+      <ShaderCanvas bind:this={shaderCanvas} bind:logs />
     </div>
+
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="editor"
       bind:this={editorElement}
       onkeydown={editorOnKeyDown}
     ></div>
+
     <div class="logs">
       {#if logs !== null}
         {#snippet Log(
@@ -227,6 +224,8 @@
         {@render Log(logs.info, "Info", "Info")}
       {/if}
     </div>
+
+    <div class="options"></div>
   </div>
 </div>
 
@@ -267,6 +266,8 @@
 
     width: 80%;
     min-height: 50vh;
+
+    row-gap: 10px;
   }
 
   $margin: 1%;
@@ -282,11 +283,14 @@
 
   .editor {
     margin-left: calc(0.5 * $margin);
+    max-height: 50vh;
   }
 
   @media screen and (max-width: 1000px) {
     .main {
       flex-direction: column;
+
+      row-gap: 0px;
     }
 
     .canvas,
