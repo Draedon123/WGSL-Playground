@@ -11,6 +11,7 @@ A basic client-only editor for WGSL shaders, based on Shadertoy
 - [[SIG15] Entry Level](https://www.shadertoy.com/view/llXXzf), by [dila](https://www.shadertoy.com/user/dila)
 - [Flame](https://www.shadertoy.com/view/MdX3zr), by [XT95](https://www.shadertoy.com/user/XT95)
 - [Octagrams](https://www.shadertoy.com/view/tlVGDt), by [whisky_shusuky](https://www.shadertoy.com/user/whisky_shusuky)
+- [Creation by Silexars](https://www.shadertoy.com/view/XsXXDn), by [Danilo Guanabara](https://www.shadertoy.com/user/Danguafer) (Danguafer on Shadetoy)
 
 ## Icons
 
