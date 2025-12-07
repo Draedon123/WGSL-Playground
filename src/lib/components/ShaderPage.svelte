@@ -52,11 +52,6 @@
       return;
     }
 
-    console.log(
-      ...logs.errors.map((error) =>
-        createMarker(monaco.MarkerSeverity.Error, "Error", error)
-      )
-    );
     monaco.editor.setModelMarkers(model, "validation", [
       ...logs.errors.map((error) =>
         createMarker(monaco.MarkerSeverity.Error, "Error", error)
@@ -101,12 +96,15 @@
   }
 
   async function updateCode(newCode = editor?.getValue() ?? ""): Promise<void> {
-    await shaderCanvas.recompile(newCode);
+    const compiled = await shaderCanvas.recompile(newCode);
 
     if (!showcase) {
       project.code = newCode;
+
       setTimeout(async () => {
-        const thumbnail = await shaderCanvas.save();
+        const thumbnail = compiled
+          ? await shaderCanvas.save()
+          : project.thumbnail;
 
         await database.projects.update(project, {
           code: project.code,
@@ -170,6 +168,7 @@
     onchange={nameOnChange}
     disabled={showcase}
     value={project.name}
+    autocomplete="off"
   />
 </div>
 

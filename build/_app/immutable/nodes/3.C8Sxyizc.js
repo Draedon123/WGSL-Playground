@@ -1,4 +1,4 @@
-import"../chunks/DsnmJJEf.js";import{i as o}from"../chunks/BsfT3vlS.js";import{p as m,o as c,f as d,s as u,a as p,b as l,c as h,m as g,g as e,d as b,h as v}from"../chunks/B39YqE9V.js";import{b as w}from"../chunks/DcX3g68H.js";import{d as y,r as _}from"../chunks/CYjs1OJ3.js";import{f as B}from"../chunks/Cn626UnJ.js";const A=`@fragment\r
+import"../chunks/DsnmJJEf.js";import{i as o}from"../chunks/BsfT3vlS.js";import{p as m,o as c,f as d,s as u,a as p,b as l,c as h,m as g,g as e,d as b,h as v}from"../chunks/B39YqE9V.js";import{b as w}from"../chunks/DcX3g68H.js";import{d as y,r as _}from"../chunks/BKlZncb-.js";import{f as B}from"../chunks/Cxm0d02K.js";const A=`@fragment\r
 fn main(fragment: Fragment) -> @location(0) vec4f {\r
   return vec4f(fragment.uv, 0.0, 1.0);\r
 }\r

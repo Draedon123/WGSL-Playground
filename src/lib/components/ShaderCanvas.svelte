@@ -59,17 +59,17 @@
   let frame = $state(1);
 
   let mostRecentCode = "";
-  export async function recompile(code: string): Promise<void> {
+  export async function recompile(code: string): Promise<boolean> {
     if (code === shaderSource) {
       mostRecentCode = code;
-      return;
+      return true;
     }
 
     mostRecentCode = code;
     logs = null;
 
     if (adapter === undefined || device === undefined) {
-      return;
+      return false;
     }
 
     const shader = device.createShaderModule({
@@ -98,7 +98,7 @@
         info,
       };
 
-      return;
+      return false;
     }
 
     renderPipeline = device.createRenderPipeline({
@@ -121,7 +121,15 @@
 
     if (running) {
       restart();
+    } else {
+      tick({
+        frame: 1,
+        deltaTime_ms: 0,
+        totalTime_ms: 0,
+      });
     }
+
+    return true;
   }
 
   export async function updateChannels(
