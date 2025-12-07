@@ -5,6 +5,7 @@
   import { resolve } from "$app/paths";
   import { database, type Project } from "$lib/Database";
   import { onMount } from "svelte";
+  import { fetchBuffer, fetchText } from "$lib/fetch";
 
   let { children }: WithChildren = $props();
 
@@ -13,9 +14,7 @@
       return;
     }
 
-    const defaultThumbnail = await (
-      await fetch(resolve("/") + "default_thumbnail.png")
-    ).arrayBuffer();
+    const defaultThumbnail = await fetchBuffer("default_thumbnail.png");
 
     await database.projects.add({
       name: "My First Shader",
@@ -31,12 +30,10 @@
 
     const shaders: Project[] = [];
     for (const shader of showcaseShaders) {
-      const folder = resolve("/") + `showcase/shaders/${shader.name}/`;
+      const folder = `showcase/shaders/${shader.name}/`;
 
-      const code = await (await fetch(folder + "code.wgsl")).text();
-      const thumbnail = await (
-        await fetch(folder + "thumbnail.png")
-      ).arrayBuffer();
+      const code = await fetchText(folder + "code.wgsl");
+      const thumbnail = await fetchBuffer(folder + "thumbnail.png");
       const channels: ArrayBuffer[] = [
         new ArrayBuffer(),
         new ArrayBuffer(),
@@ -45,9 +42,7 @@
       ];
 
       for (let i = 0; i < shader.channels; i++) {
-        channels[i] = await (
-          await fetch(folder + `channel${i}.png`)
-        ).arrayBuffer();
+        channels[i] = await fetchBuffer(folder + `channel${i}.png`);
       }
 
       shaders.push({
@@ -83,6 +78,7 @@
     >
   {/snippet}
 
+  {@render Item(resolve("/new"), "New")}
   {@render Item(resolve("/shaders"), "My Shaders")}
   {@render Item(resolve("/"), "Home")}
 </nav>

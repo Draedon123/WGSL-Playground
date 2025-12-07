@@ -1,3 +1,5 @@
+import { fetchBlob } from "./fetch";
+
 class Texture {
   public texture!: GPUTexture;
 
@@ -80,7 +82,7 @@ class Texture {
   }
 
   private static async toBitmap(url: string): Promise<ImageBitmap> {
-    return await createImageBitmap(await (await fetch(url)).blob());
+    return await createImageBitmap(await fetchBlob(url));
   }
 
   public destroy(): void {
