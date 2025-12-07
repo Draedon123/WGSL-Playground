@@ -24,7 +24,10 @@
   let logs: ShaderLogs | null = $state(null);
 
   $effect(() => {
-    editor?.setValue(project.code);
+    if (editor?.getValue() !== project.code) {
+      editor?.setValue(project.code);
+    }
+
     shaderCanvas.recompile(project.code);
     shaderCanvas.updateChannels(project.channels);
   });

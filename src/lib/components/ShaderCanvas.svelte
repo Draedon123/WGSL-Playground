@@ -33,6 +33,7 @@
   const loop = new Loop({ wormholeThreshold: Infinity });
 
   let canvas: HTMLCanvasElement;
+  let shaderSource: string;
   let gpu: GPUCanvasContext;
   let adapter: GPUAdapter;
   let device: GPUDevice;
@@ -53,6 +54,11 @@
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<void> {
+    if (code === shaderSource) {
+      mostRecentCode = code;
+      return;
+    }
+
     mostRecentCode = code;
     logs = null;
 
@@ -63,6 +69,8 @@
     const shader = device.createShaderModule({
       code: shaderTemplate + code,
     });
+
+    shaderSource = code;
 
     const compilationInfo = await shader.getCompilationInfo();
     const errors = processCompilationMessages(
@@ -104,7 +112,10 @@
     });
 
     gpuTimer.reset();
-    restart();
+
+    if (running) {
+      restart();
+    }
   }
 
   export async function updateChannels(
