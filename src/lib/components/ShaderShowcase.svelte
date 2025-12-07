@@ -11,7 +11,8 @@
 
 <br />
 
-{#if $shaders}
+<!-- assume that there is always more than one showcase shader -->
+{#if $shaders && $shaders.length > 0}
   <div class="centre">
     <div class="shaders">
       {#each $shaders as shader (shader.name)}
@@ -21,6 +22,8 @@
       {/each}
     </div>
   </div>
+{:else}
+  <p class="loading">Loading...</p>
 {/if}
 
 <style lang="scss">
@@ -48,5 +51,11 @@
   small {
     text-align: center;
     display: block;
+  }
+
+  .loading {
+    display: block;
+    text-align: center;
+    font-size: large;
   }
 </style>
