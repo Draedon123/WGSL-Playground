@@ -4,6 +4,10 @@
 
 A basic client-only editor for WGSL fragment shaders, based on Shadertoy, to allow for rapid editing and prototyping of shaders
 
+[Video demo](https://youtu.be/D2fGFTH9O_U) available in the event that your browser/device doesn't support WebGPU
+
+Note that the low fps on shaders in the demo is a limitation of my GPU
+
 # References
 
 ## Featured Shaders
