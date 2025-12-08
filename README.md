@@ -1,6 +1,8 @@
+![banner](banner.png)
+
 # WGSL Playground
 
-A basic client-only editor for WGSL shaders, based on Shadertoy
+A basic client-only editor for WGSL fragment shaders, based on Shadertoy, to allow for rapid editing and prototyping of shaders
 
 # References
 
