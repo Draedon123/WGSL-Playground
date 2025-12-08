@@ -38,9 +38,7 @@ class Loop {
       return;
     }
 
-    this.frame = 1;
-    this.totalTime = 0;
-    this.lastFrameTime = -1;
+    this.reset();
     this.frameID = requestAnimationFrame(this.tick.bind(this));
   }
 
@@ -64,6 +62,12 @@ class Loop {
   public restart(): void {
     this.stop();
     this.start();
+  }
+
+  public reset(): void {
+    this.frame = 1;
+    this.totalTime = 0;
+    this.lastFrameTime = -1;
   }
 
   public pause(): void {

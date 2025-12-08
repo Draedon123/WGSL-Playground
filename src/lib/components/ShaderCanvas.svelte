@@ -122,6 +122,7 @@
     if (running) {
       restart();
     } else {
+      loop.reset();
       tick({
         frame: 1,
         deltaTime_ms: 0,
@@ -455,7 +456,7 @@
         if (running) {
           restart();
         } else {
-          stop();
+          loop.reset();
           tick({
             frame: 1,
             deltaTime_ms: 0,
