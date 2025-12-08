@@ -57,6 +57,7 @@
   let frameTime_ms = $state(0);
   let fps = $derived(frameTime_ms === 0 ? 0 : 1000 / frameTime_ms);
   let frame = $state(1);
+  let time = $state(0);
 
   let mostRecentCode = "";
   export async function recompile(code: string): Promise<boolean> {
@@ -252,6 +253,8 @@
     device.queue.writeBuffer(settingsBuffer, 0, bufferWriter.buffer);
 
     frame = frameData.frame;
+    time = frameData.totalTime_ms / 1000;
+
     render();
   }
 
@@ -472,10 +475,11 @@
       onclick={toggle}
       title={running ? "Pause" : "Play"}
     />
-    <span>{fps.toFixed(2)}fps</span>
-    <span>{frameTime_ms.toFixed(2)}ms</span>
-    <span>{frame}</span>
-    <div class="dimensions">
+    <span title="FPS">{fps.toFixed(2)}fps</span>
+    <span title="Frame Time">{frameTime_ms.toFixed(2)}ms</span>
+    <span title="Current Frame">{frame}</span>
+    <span title="Current Time">{time.toFixed(2)}s</span>
+    <div class="dimensions" title="Canvas Dimensions">
       <input type="number" name="width" id="width" bind:value={width} />
       x
       <input type="number" name="height" id="height" bind:value={height} />
